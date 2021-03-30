@@ -41,7 +41,7 @@ async function checkOTX(ip) {
 // https://www.abuseipdb.com/check/[IP]/json?key=process.env.ABUSEIPKEY
 export function checkLinks(bot: typeof Telegraf) {
   var dns = require('dns');
-  const REPLACE_REGEX = /^https?:\/\//i
+  const REPLACE_REGEX = /^(https?):\/\//i
   bot.on('text', ctx => {
     if (ctx.message.text !== undefined) {
       let detected_urls = ctx.message.text.split(' ')
