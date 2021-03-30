@@ -1,5 +1,5 @@
 name: English
 help: |
-  <b>Bot</b> allows you to see how Telegraf bots can be built.
+  <b>Bot</b> will check messages for links to mallware sites
 language: Please, select the language.
 language_selected: <b>Bot</b> now speaks English.

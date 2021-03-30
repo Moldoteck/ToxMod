@@ -9,6 +9,7 @@ import { checkTime } from '@/middlewares/checkTime'
 import { setupHelp } from '@/commands/help'
 import { setupI18N } from '@/helpers/i18n'
 import { setupLanguage } from '@/commands/language'
+import { checkLinks } from '@/commands/linkcheck'
 import { attachUser } from '@/middlewares/attachUser'
 
 // Check time
@@ -20,6 +21,7 @@ setupI18N(bot)
 // Setup commands
 setupHelp(bot)
 setupLanguage(bot)
+checkLinks(bot)
 
 // Start bot
 bot.launch().then(() => {
