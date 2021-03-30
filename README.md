@@ -4,7 +4,7 @@ This bot will reply with text `Possible threat: ...` and triggered database to a
 # Databases:
 <b>Already implemented:</b>
 * AbuseIPDB
-* AlienVault Open Threat Exchang
+* AlienVault Open Threat Exchang<br>
 <b>Will be added:</b>
 * Google Safe Browsing
 * Metacert
