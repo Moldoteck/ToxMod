@@ -1,15 +1,16 @@
 # Telegram bot for detecting links to malware sites
 This bot will reply with text `Possible threat: ...` and triggered database to a message containing links to malware sites
 
-# Used databases:
-AbuseIPDB<br>
-AlienVault Open Threat Exchange<br>
-<b>Will be added:</b><br>
-Google Safe Browsing<br>
-Metacert<br>
-URLScan.io<br>
-VirusTotal<br>
-Web of Trust<br>
+# Databases:
+<b>Already implemented:</b>
+* AbuseIPDB
+* AlienVault Open Threat Exchang
+<b>Will be added:</b>
+* Google Safe Browsing
+* Metacert
+* URLScan.io
+* VirusTotal
+* Web of Trust
 
 # Installation and local launch
 
