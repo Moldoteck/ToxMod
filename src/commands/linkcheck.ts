@@ -41,17 +41,20 @@ async function checkOTX(ip) {
 // https://www.abuseipdb.com/check/[IP]/json?key=process.env.ABUSEIPKEY
 export function checkLinks(bot: typeof Telegraf) {
   var dns = require('dns');
+  const REPLACE_REGEX = /^https?:\/\//i
   bot.on('text', ctx => {
     if (ctx.message.text !== undefined) {
       let detected_urls = ctx.message.text.split(' ')
       detected_urls = detected_urls.filter(function (item) {
-        return item.length > 6 && item.includes('.') && item.indexOf('.') < item.length - 1 - 1 && (item.match(/\./g) || []).length == 1;
+        let point_nr = (item.match(/\./g) || []).length
+        return item.length > 6 && item.lastIndexOf('.') < item.length - 1 - 1 && point_nr <= 2 && point_nr >= 1;
       });
       if (detected_urls !== null) {
         detected_urls = [...new Set(detected_urls)];
-        detected_urls.forEach(url => {
+        detected_urls.forEach(url => {          
+          url = url.replace(REPLACE_REGEX, '');
           console.log(url)
-          dns.lookup(ctx.message.text, async function (err, address, _) {
+          dns.lookup(url, async function (err, address, _) {
             if (err == null) {
               let ABUSEIP_result = await checkABUSEIP(address)
               let OTX_result = await checkOTX(address)
