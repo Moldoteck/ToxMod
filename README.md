@@ -1,4 +1,5 @@
 # Telegram bot for detecting links to malware sites
+ <a href="https://t.me/MalwareShieldBot">@MalwareShieldBot</a><br>
 This bot will reply with text `Possible threat: ...` and triggered database to a message containing links to malware sites
 
 # Databases:
