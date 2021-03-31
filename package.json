@@ -1,10 +1,10 @@
 {
-  "name": "telegraf-template",
+  "name": "malware-shield-bot",
   "version": "1.0.0",
-  "description": "Telegram bot template based on telegraf.js.org",
+  "description": "Telegram bot which detects links to malware sites in groups",
   "main": "dist/app.js",
-  "repository": "https://github.com/backmeupplz/telegraf-template",
-  "author": "backmeupplz <backmeupplz@gmail.com>",
+  "repository": "https://github.com/Moldoteck/MalwareBot",
+  "author": "Moldoteck <moldotecko@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {

@@ -62,6 +62,7 @@ async function checkVirusTotal(url) {
 
   let result = await needle('post', `https://www.virustotal.com/api/v3/urls`, data, options)
   let id = (result.body['data'])['id']
+  //TODO: if empty result, do new request after one/two seconds
 
   result = await virusTotalIDCheck(id)
 
