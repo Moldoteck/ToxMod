@@ -47,7 +47,7 @@ function sleep(ms) {
 
 async function virusTotalIDCheck(id) {
   //wait a bit for VT to process the request
-  await sleep(1000);
+  await sleep(2000);
   let options = { headers: { 'x-apikey': process.env.VIRUSTOTALKEY, 'Accept': 'application/json' }, follow_max: 5 }
   return await needle('get', `https://www.virustotal.com/api/v3/analyses/${id}`, options)
 } 
