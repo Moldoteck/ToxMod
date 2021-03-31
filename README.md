@@ -5,13 +5,13 @@ This bot will reply with text `Possible threat: ...` and triggered database to a
 # Databases:
 <b>Already implemented:</b>
 * AbuseIPDB
-* AlienVault Open Threat Exchang<br>
+* AlienVault Open Threat Exchang
+* VirusTotal<br>
 
 <b>Will be added:</b>
 * Google Safe Browsing
 * Metacert
 * URLScan.io
-* VirusTotal
 * Web of Trust
 
 # Installation and local launch
