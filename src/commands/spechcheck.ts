@@ -31,7 +31,7 @@ async function getToxicityResult(language, text) {
     toxic_score = response.data.attributeScores.TOXICITY.summaryScore.value
     profan_score = response.data.attributeScores.PROFANITY.summaryScore.value
   }
-  // console.log(toxic_score, profan_score)
+  console.log(toxic_score, profan_score)
   return [toxic_score, profan_score]
 }
 
@@ -48,6 +48,12 @@ export function checkSpeech(bot: typeof Telegraf) {
 
 export function setupToxicThreshold(bot: typeof Telegraf) {
   bot.command(['toxic'], (ctx) => {
+    // ctx.
+  })
+}
+
+export function setupProfanityThreshold(bot: typeof Telegraf) {
+  bot.command(['profan'], (ctx) => {
     // ctx.
   })
 }
