@@ -1,8 +1,21 @@
 // import { Context } from "telegraf";
 const { Telegraf } = require('telegraf')
 const { google } = require('googleapis');
+const needle = require('needle')
 
 let perspective_link = 'https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1';
+
+
+async function getHFToxicityResult(text) {
+  let API_URL = "https://api-inference.huggingface.co/models/sismetanin/rubert-toxic-pikabu-2ch"
+  var options = {
+    headers: { Authorization: `Bearer ${process.env.HUGGINGFACEKEY}` }
+  }
+  let res = await needle('post', API_URL, text, options)
+
+  console.log(res.body[0][1].score)
+  return res.body[0][1].score
+}
 
 async function getToxicityResult(language, text) {
   let client = await google.discoverAPI(perspective_link)
@@ -46,8 +59,17 @@ export function checkSpeech(bot: typeof Telegraf) {
   bot.on('text', async ctx => {
     if (ctx.message.text !== undefined) {
       let result = await getToxicityResult(ctx.i18n.t('short_name'), ctx.message.text)
+
       if (result[0] > 0.65 || result[1] > 0.7 || result[2] > 0.6 || result[3] > 0.8) {
         ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
+      }
+      else {
+        if (ctx.i18n.t('short_name') == 'ru') {
+          let hgresult = await getHFToxicityResult(ctx.message.text)
+          if (hgresult > 0.85) {
+            ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
+          }
+        }
       }
     }
   })
