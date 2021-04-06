@@ -46,7 +46,7 @@ export function checkSpeech(bot: typeof Telegraf) {
   bot.on('text', async ctx => {
     if (ctx.message.text !== undefined) {
       let result = await getToxicityResult(ctx.i18n.t('short_name'), ctx.message.text)
-      if (result[0] > 0.65 || result[1] > 0.7 || result[2] > 0.6 || result[3] > 0.6) {
+      if (result[0] > 0.65 || result[1] > 0.7 || result[2] > 0.6 || result[3] > 0.75) {
         ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
       }
     }
