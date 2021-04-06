@@ -1,9 +1,9 @@
 {
-  "name": "malware-shield-bot",
+  "name": "toxmod-bot",
   "version": "1.0.0",
-  "description": "Telegram bot which detects links to malware sites in groups",
+  "description": "Telegram bot which detects toxic comments based on Perspective API",
   "main": "dist/app.js",
-  "repository": "https://github.com/Moldoteck/MalwareBot",
+  "repository": "https://github.com/Moldoteck/ToxMod",
   "author": "Moldoteck <moldotecko@gmail.com>",
   "license": "MIT",
   "private": false,
@@ -28,7 +28,7 @@
     "telegraf": "4.3.0",
     "telegraf-i18n": "6.6.0",
     "typescript": "^4.2.3",
-    "needle": "^2.6.0"
+    "googleapis":"^70.0.0"
   },
   "_moduleAliases": {
     "@": "dist"

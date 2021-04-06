@@ -1,22 +1,14 @@
-# Telegram bot for detecting links to malware sites
- <a href="https://t.me/MalwareShieldBot">@MalwareShieldBot</a><br>
-This bot will reply with text `Possible threat: ...` and triggered database to a message containing links to malware sites
+# Telegram bot for detecting toxic messages in group chats
+ <a href="https://t.me/ToxModBot">@ToxModBot</a><br>
+This bot will reply with `Possible toxic message` to a message containing toxic/profanic words.
+`doNotStore` flag is set to true in order to preserve better privacy for message content (it will not be stored on servers)
 
-# Databases:
-<b>Already implemented:</b>
-* AbuseIPDB
-* AlienVault Open Threat Exchang
-* VirusTotal<br>
-
-<b>Will be added:</b>
-* Google Safe Browsing
-* Metacert
-* URLScan.io
-* Web of Trust
+# API's:
+Google Perspective API
 
 # Installation and local launch
 
-1. Clone this repo: `git clone https://github.com/Moldoteck/MalwareBot`
+1. Clone this repo: `git clone https://github.com/Moldoteck/ToxMod`
 2. Launch the [mongo database](https://www.mongodb.com/) locally
 3. Create `.env` with the environment variables listed below
 4. Run `yarn install` in the root folder
@@ -28,8 +20,7 @@ And you should be good to go! Feel free to fork and submit pull requests. Thanks
 
 - `TOKEN` — Telegram bot token
 - `MONGO`— URL of the mongo database
-- `ABUSEIPKEY` — Token for AbuseIPDB
-- `OTXKEY`— Token for AlienVault Open Threat Exchange
+- `PERSPECTIVEKEY` — Token for Google Perspective API. More info here: https://perspectiveapi.com
 
 Also, please, consider looking at `.env.sample`.
 
@@ -37,4 +28,4 @@ Also, please, consider looking at `.env.sample`.
 
 MIT — use for any purpose. Would be great if you could leave a note about the original developers. Thanks!
 
-** Inspired from here: https://github.com/backmeupplz/telegraf-template **
+Inspired from here: https://github.com/backmeupplz/telegraf-template

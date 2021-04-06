@@ -1,5 +1,7 @@
 name: English
+short_name: en
 help: |
   <b>Bot</b> will check messages for links to mallware sites
 language: Please, select the language.
 language_selected: <b>Bot</b> now speaks English.
+toxic_notification: Possible toxic message
