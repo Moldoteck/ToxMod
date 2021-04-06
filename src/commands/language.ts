@@ -6,7 +6,6 @@ import { safeLoad } from 'js-yaml'
 
 export function setupLanguage(bot: typeof Telegraf) {
   bot.command('language', (ctx) => {
-    console.log(languageKeyboard())
     ctx.reply(ctx.i18n.t('language'), languageKeyboard())
   })
 
