@@ -13,7 +13,7 @@ async function getHFToxicityResult(text) {
   }
   let res = await needle('post', API_URL, text, options)
 
-  console.log(res.body[0][1].score)
+  console.log(res.body)
   return res.body[0][1].score
 }
 
@@ -64,12 +64,12 @@ export function checkSpeech(bot: typeof Telegraf) {
         ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
       }
       else {
-        if (ctx.i18n.t('short_name') == 'ru') {
-          let hgresult = await getHFToxicityResult(ctx.message.text)
-          if (hgresult > 0.85) {
-            ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
-          }
-        }
+        // if (ctx.i18n.t('short_name') == 'ru') {
+        //   let hgresult = await getHFToxicityResult(ctx.message.text)
+        //   if (hgresult > 0.85) {
+        //     ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
+        //   }
+        // }
       }
     }
   })
