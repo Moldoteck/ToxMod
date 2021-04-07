@@ -1,5 +1,5 @@
 // import { Context } from "telegraf";
-const { Telegraf } = require('telegraf')
+import { Context, Telegraf } from 'telegraf'
 const { google } = require('googleapis');
 const needle = require('needle')
 
@@ -55,9 +55,37 @@ async function getToxicityResult(language, text) {
   return [toxic_score, profan_score, insult_score, identity_atack_score]
 }
 
-export function checkSpeech(bot: typeof Telegraf) {
+
+
+function setToxVal(ctx)//should add to chat info
+{
+  let toxVal = parseFloat(ctx.message.text.split(' ')[1])
+  if (toxVal != NaN && toxVal <= 1 && toxVal >= 0) {
+    ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
+  }
+}
+
+export function checkSpeech(bot: Telegraf<Context>) {
+
+  bot.command('toxic', async (ctx) => {
+    console.log(ctx.chat.type)
+    if (ctx.chat.type == 'group' || ctx.chat.type == 'supergroup') {
+      let chat_member = await ctx.getChatMember(ctx.message.from.id)
+      let chat_admins = await ctx.getChatAdministrators()
+
+      if (chat_admins.includes(chat_member)) {
+        setToxVal(ctx)
+      }
+    }
+    else if (ctx.chat.type == "private") {
+      setToxVal(ctx)
+    }
+  })
+
   bot.on('text', async ctx => {
     if (ctx.message.text !== undefined) {
+      let user = ctx.dbuser
+      user.language
       let result = await getToxicityResult(ctx.i18n.t('short_name'), ctx.message.text)
 
       if (result[0] > 0.65 || result[1] > 0.7 || result[2] > 0.6 || result[3] > 0.8) {
@@ -73,16 +101,11 @@ export function checkSpeech(bot: typeof Telegraf) {
       }
     }
   })
+
+
+  // bot.command(['profan'], (ctx) => {
+  //   // ctx.
+  // })
+
 }
 
-export function setupToxicThreshold(bot: typeof Telegraf) {
-  bot.command(['toxic'], (ctx) => {
-    // ctx.
-  })
-}
-
-export function setupProfanityThreshold(bot: typeof Telegraf) {
-  bot.command(['profan'], (ctx) => {
-    // ctx.
-  })
-}

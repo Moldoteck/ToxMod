@@ -1,10 +1,10 @@
 import { Markup as m } from 'telegraf'
-const { Telegraf } = require('telegraf')
+import { Context, Telegraf } from 'telegraf'
 
 import { readdirSync, readFileSync } from 'fs'
 import { safeLoad } from 'js-yaml'
 
-export function setupLanguage(bot: typeof Telegraf) {
+export function setupLanguage(bot: Telegraf<Context>) {
   bot.command('language', (ctx) => {
     ctx.reply(ctx.i18n.t('language'), languageKeyboard())
   })
@@ -12,21 +12,23 @@ export function setupLanguage(bot: typeof Telegraf) {
   bot.action(
     localesFiles().map((file) => file.split('.')[0]),
     async (ctx) => {
-      let user = ctx.dbuser
-      user.language = ctx.callbackQuery.data
-      user = await (user as any).save()
-      const message = ctx.callbackQuery.message
+      let chat = ctx.dbchat
+      if ("data" in ctx.callbackQuery) {
+        chat.language = ctx.callbackQuery.data
+        chat = await (chat as any).save()
+        const message = ctx.callbackQuery.message
 
-      const anyI18N = ctx.i18n as any
-      anyI18N.locale(ctx.callbackQuery.data)
+        const anyI18N = ctx.i18n as any
+        anyI18N.locale(ctx.callbackQuery.data)
 
-      await ctx.telegram.editMessageText(
-        message.chat.id,
-        message.message_id,
-        undefined,
-        ctx.i18n.t('language_selected'),
-        { parse_mode: 'HTML' }
-      )
+        await ctx.telegram.editMessageText(
+          message.chat.id,
+          message.message_id,
+          undefined,
+          ctx.i18n.t('language_selected'),
+          { parse_mode: 'HTML' }
+        )
+      }
     }
   )
 }

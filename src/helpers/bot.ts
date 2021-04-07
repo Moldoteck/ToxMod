@@ -1,3 +1,3 @@
-const { Telegraf } = require('telegraf')
+import { Context, Telegraf } from 'telegraf'
 
-export const bot = new Telegraf(process.env.TOKEN)
+export const bot = new Telegraf<Context>(process.env.TOKEN)
