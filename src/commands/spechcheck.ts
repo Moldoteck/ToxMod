@@ -86,12 +86,17 @@ export function checkSpeech(bot: Telegraf<Context>) {
     if (ctx.message.text !== undefined) {
       let user = ctx.dbuser
       user.language
-      let result = await getToxicityResult(ctx.i18n.t('short_name'), ctx.message.text)
+      let result = await getToxicityResult('ru', ctx.message.text)
 
       if (result[0] > 0.65 || result[1] > 0.7 || result[2] > 0.6 || result[3] > 0.8) {
         ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
       }
       else {
+        let result = await getToxicityResult('en', ctx.message.text)
+
+        if (result[0] > 0.65 || result[1] > 0.7 || result[2] > 0.6 || result[3] > 0.8) {
+          ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
+        }
         // if (ctx.i18n.t('short_name') == 'ru') {
         //   let hgresult = await getHFToxicityResult(ctx.message.text)
         //   if (hgresult > 0.85) {
