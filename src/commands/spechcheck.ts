@@ -101,12 +101,9 @@ async function resetVals(ctx: Context) {
 async function checkAdmin(ctx) {
   let isAdmin = false
   if (ctx.chat.type == 'group' || ctx.chat.type == 'supergroup') {
-    let chat_member = await ctx.getChatMember(ctx.message.from.id)
+    let chat_member = ctx.message.from.id
     let chat_admins = await ctx.getChatAdministrators()
-    chat_member = chat_member.user.id
     chat_admins = chat_admins.map(({ user }) => user.id);
-    console.log(chat_admins)
-    console.log(chat_member)    
 
     if (chat_admins.indexOf(chat_member)!=-1) {
       isAdmin = true
