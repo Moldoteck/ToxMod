@@ -4,8 +4,7 @@ start: |
   <b>Bot</b> will detect toxic messages in group chats
 help: |
   <b>Bot</b> will detect toxic messages in group chats
-  <b>Send</b> /toxic 0.5 in order to set toxicity threshold to 0.5
-  <b>Send</b> /profan 0.5 in order to set profanity threshold to 0.5
+  <b>Send</b> /thresh <i>toxic</i> | <i>profan</i> | <i>identity</i> | <i>insult</i> 0.5 in order to change threshold for specified category to 0.5
   <b>Send</b> /resetthresh in order to reset thresholds to default values
   <b>Send</b> /getthresh in order to get default values
   <b>Send</b> /toxicscore as a reply to a message in order to get toxicity score for it
@@ -15,3 +14,5 @@ help: |
 language: Please, select the language.
 language_selected: <b>Bot</b> now speaks English.
 toxic_notification: Possible toxic message
+default_thresh: Thresholds are dafaulted
+thresh_info: Thresholds are

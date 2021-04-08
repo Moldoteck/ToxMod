@@ -8,8 +8,8 @@ let perspective_link = 'https://commentanalyzer.googleapis.com/$discovery/rest?v
 let default_vals = {
   toxic_thresh: 0.65,
   profan_thresh: 0.7,
-  identity_thresh: 0.7,
-  insult_thresh: 0.6
+  insult_thresh: 0.6,
+  identity_thresh: 0.7
 }
 
 async function getHFToxicityResult(text) {
@@ -68,23 +68,39 @@ async function getToxicityResult(language, text) {
   return result
 }
 
-async function setToxVal(ctx) {
-  let toxVal = parseFloat(ctx.message.text.split(' ')[1])
-  if (toxVal != NaN && toxVal <= 1 && toxVal >= 0) {
-    let chat = ctx.dbchat
-    chat.toxic_thresh = toxVal
-    chat = await (chat as any).save()
-    ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
-  }
-}
-
-async function setProfanVal(ctx) {
-  let profanVal = parseFloat(ctx.message.text.split(' ')[1])
-  if (profanVal != NaN && profanVal <= 1 && profanVal >= 0) {
-    let chat = ctx.dbchat
-    chat.profan_thresh = profanVal
-    chat = await (chat as any).save()
-    ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
+async function setVal(ctx) {
+  let elements = ctx.message.text.split(' ')
+  if (elements.length == 3) {
+    let thresh_type = elements[1]
+    try {
+      let thresh_val = parseFloat(elements[2])
+      if (thresh_val != NaN && thresh_val <= 1 && thresh_val >= 0) {
+        let chat = ctx.dbchat
+        if ('toxic' == thresh_type) {
+          chat.toxic_thresh = thresh_val
+          chat = await (chat as any).save()
+          ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
+        }
+        if ('profan' == thresh_type) {
+          chat.profan_thresh = thresh_val
+          chat = await (chat as any).save()
+          ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
+        }
+        if ('identity' == thresh_type) {
+          chat.identity_thresh = thresh_val
+          chat = await (chat as any).save()
+          ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
+        }
+        if ('insult' == thresh_type) {
+          chat.insult_thresh = thresh_val
+          chat = await (chat as any).save()
+          ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
+        }
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
 }
 
@@ -105,7 +121,7 @@ async function checkAdmin(ctx) {
     let chat_admins = await ctx.getChatAdministrators()
     chat_admins = chat_admins.map(({ user }) => user.id);
 
-    if (chat_admins.indexOf(chat_member)!=-1) {
+    if (chat_admins.indexOf(chat_member) != -1) {
       isAdmin = true
     }
   }
@@ -117,17 +133,10 @@ async function checkAdmin(ctx) {
 
 export function checkSpeech(bot: Telegraf<Context>) {
 
-  bot.command('toxic', async (ctx) => {
+  bot.command('thresh', async (ctx) => {
     let isAdmin = await checkAdmin(ctx)
     if (isAdmin) {
-      await setToxVal(ctx)
-    }
-  })
-
-  bot.command('profan', async (ctx) => {
-    let isAdmin = await checkAdmin(ctx)
-    if (isAdmin) {
-      await setProfanVal(ctx)
+      await setVal(ctx)
     }
   })
 
@@ -135,18 +144,18 @@ export function checkSpeech(bot: Telegraf<Context>) {
     let isAdmin = await checkAdmin(ctx)
     if (isAdmin) {
       await resetVals(ctx)
-      ctx.reply(`Thresholds are dafaulted:\n ${JSON.stringify(default_vals, null, 2)}`, { reply_to_message_id: ctx.message.message_id });
+      ctx.reply(`${ctx.i18n.t('default_thresh')}:\n ${JSON.stringify(default_vals, null, 2)}`, { reply_to_message_id: ctx.message.message_id });
     }
   })
 
   bot.command('getthresh', async (ctx) => {
     let thresh = {
-      toxic_score: ctx.dbchat.toxic_thresh,
-      profan_score: ctx.dbchat.profan_thresh,
-      insult_score: ctx.dbchat.insult_thresh,
-      identity_score: ctx.dbchat.identity_thresh
+      toxic_thresh: ctx.dbchat.toxic_thresh,
+      profan_thresh: ctx.dbchat.profan_thresh,
+      insult_thresh: ctx.dbchat.insult_thresh,
+      identity_thresh: ctx.dbchat.identity_thresh
     }
-    ctx.reply(`Thresholds are:\n ${JSON.stringify(thresh, null, 2)}`, { reply_to_message_id: ctx.message.message_id });
+    ctx.reply(`${ctx.i18n.t('thresh_info')}:\n ${JSON.stringify(thresh, null, 2)}`, { reply_to_message_id: ctx.message.message_id });
   })
 
   bot.command('toxicscore', async (ctx) => {
