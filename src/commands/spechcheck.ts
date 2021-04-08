@@ -28,7 +28,7 @@ async function getToxicityResult(language, text) {
   let toxic_score: number = 0
   let profan_score: number = 0
   let insult_score: number = 0
-  let identity_atack_score: number = 0
+  let identity_score: number = 0
   const analyzeRequest = {
     comment: {
       text: text
@@ -54,11 +54,18 @@ async function getToxicityResult(language, text) {
     toxic_score = response.data.attributeScores.TOXICITY.summaryScore.value
     profan_score = response.data.attributeScores.PROFANITY.summaryScore.value
     insult_score = response.data.attributeScores.INSULT.summaryScore.value
-    identity_atack_score = response.data.attributeScores.IDENTITY_ATTACK.summaryScore.value
+    identity_score = response.data.attributeScores.IDENTITY_ATTACK.summaryScore.value
     // console.log(response.data.attributeScores)
   }
-  console.log(toxic_score, profan_score, insult_score, identity_atack_score)
-  return [toxic_score, profan_score, insult_score, identity_atack_score]
+  let result = {
+    toxic_score: toxic_score,
+    profan_score: profan_score,
+    insult_score: insult_score,
+    identity_score: identity_score
+  }
+  console.log(result)
+
+  return result
 }
 
 async function setToxVal(ctx) {
@@ -130,16 +137,24 @@ export function checkSpeech(bot: Telegraf<Context>) {
     }
   })
 
+  bot.command('toxicscore', async (ctx) => {
+    let reply = ctx.message.reply_to_message
+    if (reply) {
+      if ('text' in reply) {
+        let result = await getToxicityResult(ctx.i18n.t('short_name'), ctx.message.text)
+        ctx.reply(JSON.stringify(result), { reply_to_message_id: ctx.message.message_id });
+      }
+    }
+  })
+
   bot.on('text', async ctx => {
     if (ctx.message.text !== undefined) {
-      let user = ctx.dbuser
-      user.language
       let result = await getToxicityResult(ctx.i18n.t('short_name'), ctx.message.text)
 
-      if (result[0] > ctx.dbchat.toxic_thresh
-        || result[1] > ctx.dbchat.profan_thresh
-        || result[2] > ctx.dbchat.insult_thresh
-        || result[3] > ctx.dbchat.identity_thresh) {
+      if (result.toxic_score > ctx.dbchat.toxic_thresh
+        || result.profan_score > ctx.dbchat.profan_thresh
+        || result.insult_score > ctx.dbchat.insult_thresh
+        || result.identity_score > ctx.dbchat.identity_thresh) {
         ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
       }
       else {
