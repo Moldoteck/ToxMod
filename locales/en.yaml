@@ -1,7 +1,17 @@
 name: English
 short_name: en
+start: |
+  <b>Bot</b> will detect toxic messages in group chats
 help: |
   <b>Bot</b> will detect toxic messages in group chats
+  <b>Send</b> /toxic 0.5 in order to set toxicity threshold to 0.5
+  <b>Send</b> /profan 0.5 in order to set profanity threshold to 0.5
+  <b>Send</b> /resetthresh in order to reset thresholds to default values
+  <b>Send</b> /getthresh in order to get default values
+  <b>Send</b> /toxicscore as a reply to a message in order to get toxicity score for it
+  <b>Send</b> /language in order to change language
+  <b>Send</b> /help - this message
+  
 language: Please, select the language.
 language_selected: <b>Bot</b> now speaks English.
 toxic_notification: Possible toxic message
