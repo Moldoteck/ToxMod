@@ -142,7 +142,19 @@ export function checkSpeech(bot: Telegraf<Context>) {
     if (reply) {
       if ('text' in reply) {
         let result = await getToxicityResult(ctx.i18n.t('short_name'), reply.text)
-        ctx.reply(JSON.stringify(result, null, 2), { reply_to_message_id: ctx.message.message_id });
+        var keys = Object.keys(result);
+        var max = result[keys[0]];
+        var max_index = 0;
+        var i;
+
+        for (i = 1; i < keys.length; i++) {
+          var value = result[keys[i]];
+          if (value > max) {
+            max = value;
+            max_index = i;
+          }
+        }
+        ctx.reply(`${keys[max_index]}: ${max}`, { reply_to_message_id: ctx.message.message_id });
       }
     }
   })
