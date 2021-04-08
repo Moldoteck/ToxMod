@@ -134,7 +134,18 @@ export function checkSpeech(bot: Telegraf<Context>) {
     let isAdmin = await checkAdmin(ctx)
     if (isAdmin) {
       await resetVals(ctx)
+      ctx.reply(`Thresholds are dafaulted:\n ${JSON.stringify(default_vals, null, 2)}`, { reply_to_message_id: ctx.message.message_id });
     }
+  })
+
+  bot.command('getthresh', async (ctx) => {
+    let thresh = {
+      toxic_score: ctx.dbchat.toxic_thresh,
+      profan_score: ctx.dbchat.profan_thresh,
+      insult_score: ctx.dbchat.insult_thresh,
+      identity_score: ctx.dbchat.identity_thresh
+    }
+    ctx.reply(`Thresholds are:\n ${JSON.stringify(thresh, null, 2)}`, { reply_to_message_id: ctx.message.message_id });
   })
 
   bot.command('toxicscore', async (ctx) => {
@@ -170,11 +181,6 @@ export function checkSpeech(bot: Telegraf<Context>) {
         ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
       }
       else {
-        // let result = await getToxicityResult('en', ctx.message.text)
-
-        // if (result[0] > 0.65 || result[1] > 0.7 || result[2] > 0.6 || result[3] > 0.8) {
-        //   ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
-        // }
         // if (ctx.i18n.t('short_name') == 'ru') {
         //   let hgresult = await getHFToxicityResult(ctx.message.text)
         //   if (hgresult > 0.85) {
