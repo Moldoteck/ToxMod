@@ -103,8 +103,8 @@ async function checkAdmin(ctx) {
   if (ctx.chat.type == 'group' || ctx.chat.type == 'supergroup') {
     let chat_member = await ctx.getChatMember(ctx.message.from.id)
     let chat_admins = await ctx.getChatAdministrators()
-    chat_member = chat_member.user
-    chat_admins = chat_admins.map(({ user }) => user);
+    chat_member = chat_member.user.id
+    chat_admins = chat_admins.map(({ user }) => user.id);
     console.log(chat_admins)
     console.log(chat_member)    
 
