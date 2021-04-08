@@ -108,7 +108,7 @@ async function checkAdmin(ctx) {
     console.log(chat_admins)
     console.log(chat_member)    
 
-    if (chat_admins.find(chat_member)) {
+    if (chat_admins.indexOf(chat_member)!=-1) {
       isAdmin = true
     }
   }
