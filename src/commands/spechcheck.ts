@@ -5,6 +5,12 @@ const needle = require('needle')
 
 let perspective_link = 'https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1';
 
+let default_vals = {
+  toxic_thresh: 0.65,
+  profan_thresh: 0.7,
+  identity_thresh: 0.8,
+  insult_thresh: 0.6
+}
 
 async function getHFToxicityResult(text) {
   let API_URL = "https://api-inference.huggingface.co/models/sismetanin/rubert-toxic-pikabu-2ch"
@@ -13,7 +19,7 @@ async function getHFToxicityResult(text) {
   }
   let res = await needle('post', API_URL, text, options)
 
-  console.log(res.body)
+  // console.log(res.body)
   return res.body[0][1].score
 }
 
@@ -55,30 +61,72 @@ async function getToxicityResult(language, text) {
   return [toxic_score, profan_score, insult_score, identity_atack_score]
 }
 
-
-
-function setToxVal(ctx)//should add to chat info
-{
+async function setToxVal(ctx) {
   let toxVal = parseFloat(ctx.message.text.split(' ')[1])
   if (toxVal != NaN && toxVal <= 1 && toxVal >= 0) {
+    let chat = ctx.dbchat
+    chat.toxic_thresh = toxVal
+    chat = await (chat as any).save()
     ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
   }
+}
+
+async function setProfanVal(ctx) {
+  let profanVal = parseFloat(ctx.message.text.split(' ')[1])
+  if (profanVal != NaN && profanVal <= 1 && profanVal >= 0) {
+    let chat = ctx.dbchat
+    chat.profan_thresh = profanVal
+    chat = await (chat as any).save()
+    ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
+  }
+}
+
+async function resetVals(ctx: Context) {
+  let chat = ctx.dbchat
+  chat.toxic_thresh = default_vals.toxic_thresh
+  chat.profan_thresh = default_vals.profan_thresh
+  chat.insult_thresh = default_vals.insult_thresh
+  chat.identity_thresh = default_vals.identity_thresh
+  chat = await (chat as any).save()
+  ctx.reply('ok', { reply_to_message_id: ctx.message.message_id });
+}
+
+async function checkAdmin(ctx) {
+  let isAdmin = false
+  if (ctx.chat.type == 'group' || ctx.chat.type == 'supergroup') {
+    let chat_member = await ctx.getChatMember(ctx.message.from.id)
+    let chat_admins = await ctx.getChatAdministrators()
+
+    if (chat_admins.includes(chat_member)) {
+      isAdmin = true
+    }
+  }
+  else if (ctx.chat.type == "private") {
+    isAdmin = true
+  }
+  return isAdmin
 }
 
 export function checkSpeech(bot: Telegraf<Context>) {
 
   bot.command('toxic', async (ctx) => {
-    console.log(ctx.chat.type)
-    if (ctx.chat.type == 'group' || ctx.chat.type == 'supergroup') {
-      let chat_member = await ctx.getChatMember(ctx.message.from.id)
-      let chat_admins = await ctx.getChatAdministrators()
-
-      if (chat_admins.includes(chat_member)) {
-        setToxVal(ctx)
-      }
+    let isAdmin = await checkAdmin(ctx)
+    if (isAdmin) {
+      await setToxVal(ctx)
     }
-    else if (ctx.chat.type == "private") {
-      setToxVal(ctx)
+  })
+
+  bot.command('profan', async (ctx) => {
+    let isAdmin = await checkAdmin(ctx)
+    if (isAdmin) {
+      await setProfanVal(ctx)
+    }
+  })
+
+  bot.command('resetthresh', async (ctx) => {
+    let isAdmin = await checkAdmin(ctx)
+    if (isAdmin) {
+      await resetVals(ctx)
     }
   })
 
@@ -88,7 +136,10 @@ export function checkSpeech(bot: Telegraf<Context>) {
       user.language
       let result = await getToxicityResult(ctx.i18n.t('short_name'), ctx.message.text)
 
-      if (result[0] > 0.65 || result[1] > 0.7 || result[2] > 0.6 || result[3] > 0.8) {
+      if (result[0] > ctx.dbchat.toxic_thresh
+        || result[1] > ctx.dbchat.profan_thresh
+        || result[2] > ctx.dbchat.insult_thresh
+        || result[3] > ctx.dbchat.identity_thresh) {
         ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
       }
       else {
@@ -106,11 +157,5 @@ export function checkSpeech(bot: Telegraf<Context>) {
       }
     }
   })
-
-
-  // bot.command(['profan'], (ctx) => {
-  //   // ctx.
-  // })
-
 }
 
