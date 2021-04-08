@@ -8,7 +8,7 @@ let perspective_link = 'https://commentanalyzer.googleapis.com/$discovery/rest?v
 let default_vals = {
   toxic_thresh: 0.65,
   profan_thresh: 0.7,
-  identity_thresh: 0.8,
+  identity_thresh: 0.7,
   insult_thresh: 0.6
 }
 
@@ -103,6 +103,8 @@ async function checkAdmin(ctx) {
   if (ctx.chat.type == 'group' || ctx.chat.type == 'supergroup') {
     let chat_member = await ctx.getChatMember(ctx.message.from.id)
     let chat_admins = await ctx.getChatAdministrators()
+    chat_member = chat_member.user
+    chat_admins = chat_admins.map(({ user }) => user);
     console.log(chat_admins)
     console.log(chat_member)    
 

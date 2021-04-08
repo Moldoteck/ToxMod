@@ -13,7 +13,7 @@ export class Chat {
     @prop({ required: true, default: 0.7 })
     profan_thresh: number
 
-    @prop({ required: true, default: 0.8 })
+    @prop({ required: true, default: 0.7 })
     identity_thresh: number
 
     @prop({ required: true, default: 0.6 })
