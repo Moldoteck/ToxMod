@@ -191,6 +191,15 @@ export function checkSpeech(bot: Telegraf<Context>) {
       }
     }
   })
+  bot.command('toxicscoreall', async (ctx) => {
+    let reply = ctx.message.reply_to_message
+    if (reply) {
+      if ('text' in reply) {
+        let result = await getToxicityResult(ctx.i18n.t('short_name'), reply.text)
+        ctx.reply(`${result}`, { reply_to_message_id: ctx.message.message_id });
+      }
+    }
+  })
 
   bot.on('text', async ctx => {
     if (ctx.message.text !== undefined) {
