@@ -1,4 +1,3 @@
-// import { Context } from "telegraf";
 import { Context, Telegraf } from 'telegraf'
 const { google } = require('googleapis');
 const needle = require('needle')
@@ -10,6 +9,18 @@ let default_vals = {
   profan_thresh: 0.7,
   insult_thresh: 0.6,
   identity_thresh: 0.7
+}
+let response_score_map = {
+  toxic_score: 'toxic_msg',
+  profan_score: 'profan_msg',
+  insult_score: 'insult_msg',
+  identity_score: 'identity_msg'
+}
+let response_notification = {
+  toxic_score: 'toxic_notification',
+  profan_score: 'profan_notification',
+  insult_score: 'insult_notification',
+  identity_score: 'identity_notification'
 }
 
 async function getHFToxicityResult(text) {
@@ -175,7 +186,8 @@ export function checkSpeech(bot: Telegraf<Context>) {
             max_index = i;
           }
         }
-        ctx.reply(`${keys[max_index]}: ${max}`, { reply_to_message_id: ctx.message.message_id });
+        let msg = response_score_map[keys[max_index]]
+        ctx.reply(`${ctx.i18n.t(msg)} ${Math.trunc(100 * max)}%`, { reply_to_message_id: ctx.message.message_id });
       }
     }
   })
@@ -188,7 +200,22 @@ export function checkSpeech(bot: Telegraf<Context>) {
         || result.profan_score > ctx.dbchat.profan_thresh
         || result.insult_score > ctx.dbchat.insult_thresh
         || result.identity_score > ctx.dbchat.identity_thresh) {
-        ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
+        var keys = Object.keys(result);
+        var max = result[keys[0]];
+        var max_index = 0;
+        var i;
+
+        for (i = 1; i < keys.length; i++) {
+          var value = result[keys[i]];
+          if (value > max) {
+            max = value;
+            max_index = i;
+          }
+        }
+        let msg = response_notification[keys[max_index]]
+        ctx.reply(ctx.i18n.t(msg), { reply_to_message_id: ctx.message.message_id });
+
+        // ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
       }
       else {
         // if (ctx.i18n.t('short_name') == 'ru') {

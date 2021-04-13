@@ -14,5 +14,12 @@ help: |
 language: Please, select the language.
 language_selected: <b>Bot</b> now speaks English.
 toxic_notification: Possible toxic message
+profan_notification: Possible profan message
+insult_notification: Possible insult message
+identity_notification: Possible negative message targeting identity
 default_thresh: Thresholds are dafaulted
 thresh_info: Thresholds are
+toxic_msg: This message is toxic with probability of
+profan_msg: This message is profan with probability of
+insult_msg: This message is insulting with probability of
+identity_msg: This message is negative against identity with probability of
