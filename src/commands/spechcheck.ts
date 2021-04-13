@@ -196,7 +196,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
     if (reply) {
       if ('text' in reply) {
         let result = await getToxicityResult(ctx.i18n.t('short_name'), reply.text)
-        ctx.reply(`${JSON.stringify(result)}`, { reply_to_message_id: ctx.message.message_id });
+        ctx.reply(`${JSON.stringify(result, null, 2)}`, { reply_to_message_id: ctx.message.message_id });
       }
     }
   })
