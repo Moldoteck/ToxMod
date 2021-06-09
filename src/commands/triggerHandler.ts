@@ -1,9 +1,5 @@
 import { Context, Telegraf } from 'telegraf'
-const { google } = require('googleapis');
-const needle = require('needle')
 import { checkAdmin } from "./adminChecker"
-let perspective_link = 'https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1';
-
 let default_vals = {
     toxic_thresh: 0.65,
     profan_thresh: 0.7,
