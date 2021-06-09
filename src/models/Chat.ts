@@ -1,4 +1,5 @@
 import { prop, getModelForClass } from '@typegoose/typegoose'
+import { chat } from 'googleapis/build/src/apis/chat'
 
 export class Chat {
     @prop({ required: true, index: true, unique: true })
@@ -18,6 +19,9 @@ export class Chat {
 
     @prop({ required: true, default: 0.6 })
     insult_thresh: number
+
+    @prop({ required: false, default: [] })
+    moderators: Array<number>
 }
 
 // Get Chat model
@@ -37,3 +41,8 @@ export async function findChat(id: number) {
     }
     return chat
 }
+
+export async function findOnlyChat(id: number) {
+    return await ChatModel.findOne({ id })
+}
+

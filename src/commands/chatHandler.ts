@@ -1,0 +1,229 @@
+import { Context, Telegraf } from 'telegraf'
+const { google } = require('googleapis');
+const needle = require('needle')
+import { findOnlyChat } from '../models'
+import { checkAdmin } from "./adminChecker"
+
+let perspective_link = 'https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1';
+
+let response_score_map = {
+  toxic_score: 'toxic_msg',
+  profan_score: 'profan_msg',
+  insult_score: 'insult_msg',
+  identity_score: 'identity_msg'
+}
+let response_notification = {
+  toxic_score: 'toxic_notification',
+  profan_score: 'profan_notification',
+  insult_score: 'insult_notification',
+  identity_score: 'identity_notification'
+}
+
+async function getHFToxicityResult(text) {
+  let API_URL = "https://api-inference.huggingface.co/models/sismetanin/rubert-toxic-pikabu-2ch"
+  var options = {
+    headers: { Authorization: `Bearer ${process.env.HUGGINGFACEKEY}` }
+  }
+  let res = await needle('post', API_URL, text, options)
+
+  // console.log(res.body)
+  return res.body[0][1].score
+}
+
+function dataObject(language: string,
+  text: string,
+  dontStore: boolean = false) {
+  return {
+    comment: {
+      text: text
+    },
+    requestedAttributes: {
+      TOXICITY: { scoreType: "PROBABILITY" },
+      PROFANITY: { scoreType: "PROBABILITY" },
+      IDENTITY_ATTACK: { scoreType: "PROBABILITY" },
+      INSULT: { scoreType: "PROBABILITY" }
+    },
+    languages: [language],
+    doNotStore: dontStore
+  }
+}
+
+async function getToxicityResult(requestData) {
+  let client = undefined
+
+  let toxic_score: number = 0
+  let profan_score: number = 0
+  let insult_score: number = 0
+  let identity_score: number = 0
+
+  try {
+    client = await google.discoverAPI(perspective_link)
+  }
+  catch (err) {
+    console.log(err)
+    return undefined
+  }
+
+  let err, response = await client.comments.analyze({
+    key: process.env.PERSPECTIVEKEY,
+    resource: requestData,
+  })
+  if (err) {
+    console.log(err)
+    return undefined
+  }
+  else {
+    let attr_scores = response.data.attributeScores
+    toxic_score = attr_scores.TOXICITY.summaryScore.value
+    profan_score = attr_scores.PROFANITY.summaryScore.value
+    insult_score = attr_scores.INSULT.summaryScore.value
+    identity_score = attr_scores.IDENTITY_ATTACK.summaryScore.value
+  }
+  let result = {
+    toxic_score: toxic_score,
+    profan_score: profan_score,
+    insult_score: insult_score,
+    identity_score: identity_score
+  }
+  // console.log(result)s
+
+  return result
+}
+
+export function checkSpeech(bot: Telegraf<Context>) {
+  bot.command('toxicscore', async (ctx) => {
+    let reply = ctx.message.reply_to_message
+    if ('text' in reply) {
+      let data = dataObject(ctx.i18n.t('short_name'), reply.text)
+      let result = await getToxicityResult(data)
+      var keys = Object.keys(result);
+      var max = result[keys[0]];
+      var max_index = 0;
+      var i;
+
+      for (i = 1; i < keys.length; i++) {
+        var value = result[keys[i]];
+        if (value > max) {
+          max = value;
+          max_index = i;
+        }
+      }
+      let msg = response_score_map[keys[max_index]]
+      ctx.reply(`${ctx.i18n.t(msg)} ${Math.trunc(100 * max)}%`, { reply_to_message_id: ctx.message.reply_to_message.message_id });
+    }
+    ctx.deleteMessage(ctx.message.message_id)
+  })
+
+  bot.command('toxicscorefull', async (ctx) => {
+    let reply = ctx.message.reply_to_message
+    if (reply) {
+      if ('text' in reply) {
+        let result = await getToxicityResult(dataObject(ctx.i18n.t('short_name'), reply.text))
+        let keys = Object.keys(result)
+        keys.forEach(key => {
+          result[key] = `${Math.trunc(100 * result[key])}%`
+        });
+
+        // let responseString = replaceAll(deleteStrings(JSON.stringify(result), ['"', '{', '}']), ',', '\n')
+        ctx.reply(`${JSON.stringify(result,null,2)}`, { reply_to_message_id: ctx.message.reply_to_message.message_id });
+      }
+    }
+    ctx.deleteMessage(ctx.message.message_id)
+  })
+
+  bot.command('subscribe_mod', async (ctx) => {
+    let chat = ctx.dbchat
+    let user_id = ctx.from.id
+    ctx.deleteMessage(ctx.message.message_id)
+    if (!chat.moderators.includes(user_id)) {
+      if (checkAdmin(ctx)) {
+        let private_chat = await findOnlyChat(user_id)
+        if (private_chat) {
+          chat.moderators.push(ctx.from.id)
+          chat = await (chat as any).save()
+        } else {
+          ctx.reply(ctx.i18n.t('chat_missing'))
+        }
+      } else {
+        ctx.reply(ctx.i18n.t('not_admin'))
+      }
+    } else {
+      ctx.reply(ctx.i18n.t('subscribed'))
+    }
+  })
+
+  bot.command('unsubscribe_mod', async (ctx) => {
+    let chat = ctx.dbchat
+    let user_id = ctx.from.id
+    ctx.deleteMessage(ctx.message.message_id)
+    if (chat.moderators.includes(user_id)) {
+      chat.moderators.splice(chat.moderators.indexOf(user_id), 1)
+      chat = await (chat as any).save()
+    } else {
+      ctx.reply(ctx.i18n.t('unsubscribed'))
+    }
+  })
+
+  bot.on('text', async ctx => {
+    if (ctx.message.text !== undefined) {
+      let data = dataObject(ctx.i18n.t('short_name'), ctx.message.text)
+      let result = await getToxicityResult(data)
+
+      if (result.toxic_score > ctx.dbchat.toxic_thresh
+        || result.profan_score > ctx.dbchat.profan_thresh
+        || result.insult_score > ctx.dbchat.insult_thresh
+        || result.identity_score > ctx.dbchat.identity_thresh) {
+        var keys = Object.keys(result);
+        var max = result[keys[0]];
+        var max_index = 0;
+        var i;
+
+        for (i = 1; i < keys.length; i++) {
+          var value = result[keys[i]];
+          if (value > max) {
+            max = value;
+            max_index = i;
+          }
+        }
+
+        let msg = response_notification[keys[max_index]]
+        ctx.reply(ctx.i18n.t(msg), { reply_to_message_id: ctx.message.message_id });
+
+        let chat = ctx.dbchat
+        chat.moderators.forEach(async moderator_id => {
+          try {
+            let chat_info = await ctx.getChat()
+            if (chat_info!= undefined && 'username' in chat_info) {
+              let first_message = await ctx.telegram.sendMessage(moderator_id, "https://t.me/" + chat_info.username + '/' + ctx.message.message_id, { disable_notification: true })
+              // ctx.telegram.sendMessage(moderator_id, ctx.i18n.t(msg), { reply_to_message_id: first_message.message_id, disable_notification: true })
+            }
+          }
+          catch (err) {
+            console.log(err)
+          }
+        });
+
+        // ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
+      }
+      else {
+        // if (ctx.i18n.t('short_name') == 'ru') {
+        //   let hgresult = await getHFToxicityResult(ctx.message.text)
+        //   if (hgresult > 0.85) {
+        //     ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
+        //   }
+        // }
+      }
+    }
+  })
+}
+
+function deleteStrings(input: string, strings: Array<string>) {
+  strings.forEach(element => {
+    input = replaceAll(input, element)
+  });
+  return input
+}
+function replaceAll(input: string, what: string, substitute: string = '') {
+  return input.split(what).join(substitute)
+}
+

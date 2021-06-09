@@ -3,10 +3,14 @@ import { Context, Telegraf } from 'telegraf'
 
 import { readdirSync, readFileSync } from 'fs'
 import { safeLoad } from 'js-yaml'
+import { checkAdmin } from "./adminChecker"
 
 export function setupLanguage(bot: Telegraf<Context>) {
   bot.command('language', (ctx) => {
-    ctx.reply(ctx.i18n.t('language'), languageKeyboard())
+    if (checkAdmin(ctx)) {
+      ctx.reply(ctx.i18n.t('language'), languageKeyboard())
+    }
+    ctx.deleteMessage(ctx.message.message_id)
   })
 
   bot.action(

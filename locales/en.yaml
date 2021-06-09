@@ -4,7 +4,9 @@ start: |
   <b>Bot</b> will detect toxic messages in group chats
 help: |
   <b>Bot</b> will detect toxic messages in group chats
-  <b>Send</b> /thresh <i>toxic</i> | <i>profan</i> | <i>identity</i> | <i>insult</i> 0.5 in order to change threshold for specified category to 0.5
+  <b>Send</b> /subscribe_mod (for admins) to became moderator of this chat
+  <b>Send</b> /unsubscribe_mod to unsubscribe from moderating this chat
+  <b>Send</b> /setthresh <i>toxic</i> | <i>profan</i> | <i>identity</i> | <i>insult</i> 0.5 in order to change threshold for specified category to 0.5
   <b>Send</b> /resetthresh in order to reset thresholds to default values
   <b>Send</b> /getthresh in order to get default values
   <b>Send</b> /toxicscore as a reply to a message in order to get toxicity score for it
@@ -13,13 +15,18 @@ help: |
   
 language: Please, select the language.
 language_selected: <b>Bot</b> now speaks English.
-toxic_notification: Possible toxic message
-profan_notification: Possible profan message
-insult_notification: Possible insult message
-identity_notification: Possible negative message targeting identity
+toxic_notification: I can be mistaken, but if message is toxic, please delete it
+profan_notification: I can be mistaken, but if message contains profanities, please delete them
+insult_notification: I can be mistaken, but if message contains insults, please delete them
+identity_notification: I can be mistaken, but if message targets identity in a negative way, please delete it
 default_thresh: Thresholds are dafaulted
 thresh_info: Thresholds are
 toxic_msg: This message is toxic with probability of
 profan_msg: This message is profan with probability of
 insult_msg: This message is insulting with probability of
 identity_msg: This message is negative against identity with probability of
+
+chat_missing: Please start a private chat with me before subscribing
+not_admin: You are not an admin
+subscribed: You are already subscribed
+unsubscribed: You are already unsubscribed

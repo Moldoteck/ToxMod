@@ -9,7 +9,9 @@ import { checkTime } from '@/middlewares/checkTime'
 import { setupHelp } from '@/commands/help'
 import { setupI18N } from '@/helpers/i18n'
 import { setupLanguage } from '@/commands/language'
-import { checkSpeech } from '@/commands/spechcheck'
+// import { checkSpeech } from '@/commands/spechcheck'
+import { handleTriggers } from '@/commands/triggerHandler'
+import { checkSpeech } from '@/commands/chatHandler'
 import { attachUser } from '@/middlewares/attachUser'
 import { attachChat } from '@/middlewares/attachChat'
 
@@ -24,6 +26,7 @@ setupI18N(bot)
 // Setup commands
 setupHelp(bot)
 setupLanguage(bot)
+handleTriggers(bot)
 checkSpeech(bot)
 
 // Start bot
