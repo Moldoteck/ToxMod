@@ -37,15 +37,14 @@ export function handleTriggers(bot: Telegraf<Context>) {
 
     bot.command('getthresh', async (ctx) => {
         let isAdmin = await checkAdmin(ctx)
-        if (isAdmin) {
-            let thresh = {
-                toxic_thresh: ctx.dbchat.toxic_thresh,
-                profan_thresh: ctx.dbchat.profan_thresh,
-                insult_thresh: ctx.dbchat.insult_thresh,
-                identity_thresh: ctx.dbchat.identity_thresh
-            }
-            ctx.reply(`${ctx.i18n.t('thresh_info')}:\n ${JSON.stringify(thresh, null, 2)}`, { reply_to_message_id: ctx.message.message_id });
+        let thresh = {
+            toxic_thresh: ctx.dbchat.toxic_thresh,
+            profan_thresh: ctx.dbchat.profan_thresh,
+            insult_thresh: ctx.dbchat.insult_thresh,
+            identity_thresh: ctx.dbchat.identity_thresh
         }
+        ctx.reply(`${ctx.i18n.t('thresh_info')}:\n ${JSON.stringify(thresh, null, 2)}`, { reply_to_message_id: ctx.message.message_id });
+
         try {
             ctx.deleteMessage(ctx.message.message_id)
         }

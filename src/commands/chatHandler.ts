@@ -1,3 +1,4 @@
+import { ExecException, ExecOptions } from 'node:child_process';
 import { Context, Telegraf } from 'telegraf'
 const { google } = require('googleapis');
 const needle = require('needle')
@@ -93,7 +94,7 @@ async function getToxicityResult(requestData) {
 export function checkSpeech(bot: Telegraf<Context>) {
   bot.command('toxicscore', async (ctx) => {
     let reply = ctx.message.reply_to_message
-    if ('text' in reply) {
+    if (reply != undefined && 'text' in reply) {
       let data = dataObject(ctx.i18n.t('short_name'), reply.text)
       let result = await getToxicityResult(data)
       var keys = Object.keys(result);
@@ -111,7 +112,12 @@ export function checkSpeech(bot: Telegraf<Context>) {
       let msg = response_score_map[keys[max_index]]
       ctx.reply(`${ctx.i18n.t(msg)} ${Math.trunc(100 * max)}%`, { reply_to_message_id: ctx.message.reply_to_message.message_id });
     }
-    ctx.deleteMessage(ctx.message.message_id)
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
   })
 
   bot.command('toxicscorefull', async (ctx) => {
@@ -125,16 +131,26 @@ export function checkSpeech(bot: Telegraf<Context>) {
         });
 
         // let responseString = replaceAll(deleteStrings(JSON.stringify(result), ['"', '{', '}']), ',', '\n')
-        ctx.reply(`${JSON.stringify(result,null,2)}`, { reply_to_message_id: ctx.message.reply_to_message.message_id });
+        ctx.reply(`${JSON.stringify(result, null, 2)}`, { reply_to_message_id: ctx.message.reply_to_message.message_id });
       }
     }
-    ctx.deleteMessage(ctx.message.message_id)
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
   })
 
   bot.command('subscribe_mod', async (ctx) => {
     let chat = ctx.dbchat
     let user_id = ctx.from.id
-    ctx.deleteMessage(ctx.message.message_id)
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
     if (!chat.moderators.includes(user_id)) {
       if (checkAdmin(ctx)) {
         let private_chat = await findOnlyChat(user_id)
@@ -155,7 +171,12 @@ export function checkSpeech(bot: Telegraf<Context>) {
   bot.command('unsubscribe_mod', async (ctx) => {
     let chat = ctx.dbchat
     let user_id = ctx.from.id
-    ctx.deleteMessage(ctx.message.message_id)
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
     if (chat.moderators.includes(user_id)) {
       chat.moderators.splice(chat.moderators.indexOf(user_id), 1)
       chat = await (chat as any).save()
@@ -193,7 +214,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
         chat.moderators.forEach(async moderator_id => {
           try {
             let chat_info = await ctx.getChat()
-            if (chat_info!= undefined && 'username' in chat_info) {
+            if (chat_info != undefined && 'username' in chat_info) {
               let first_message = await ctx.telegram.sendMessage(moderator_id, "https://t.me/" + chat_info.username + '/' + ctx.message.message_id, { disable_notification: true })
               // ctx.telegram.sendMessage(moderator_id, ctx.i18n.t(msg), { reply_to_message_id: first_message.message_id, disable_notification: true })
             }
