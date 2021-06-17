@@ -185,8 +185,31 @@ export function checkSpeech(bot: Telegraf<Context>) {
     }
   })
 
+  bot.command('interactive', async (ctx) => {
+    let chat = ctx.dbchat
+    let user_id = ctx.from.id
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
+    if (checkAdmin(ctx)) {
+      let private_chat = await findOnlyChat(user_id)
+      if (private_chat) {
+        chat.interactive = !chat.interactive
+        chat = await (chat as any).save()
+        ctx.reply(`Interactive was set to ${chat.interactive}`)
+      } else {
+        ctx.reply(ctx.i18n.t('chat_missing'))
+      }
+    } else {
+      ctx.reply(ctx.i18n.t('not_admin'))
+    }
+  })
+
   bot.on('text', async ctx => {
-    if (ctx.message.text !== undefined) {
+    if (ctx.message.text !== undefined && ctx.dbchat.interactive) {
       let data = dataObject(ctx.i18n.t('short_name'), ctx.message.text)
       let result = await getToxicityResult(data)
 

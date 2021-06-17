@@ -22,6 +22,9 @@ export class Chat {
 
     @prop({ required: false, default: [] })
     moderators: Array<number>
+    
+    @prop({ required: true, default: true })
+    interactive: boolean
 }
 
 // Get Chat model
