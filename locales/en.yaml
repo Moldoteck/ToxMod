@@ -1,11 +1,12 @@
 name: English
 short_name: en
 start: |
-  <b>Bot</b> will detect toxic messages in group chats
+  <b>Bot</b> will detect toxic messages in group chats and help moderate them
 help: |
   <b>Bot</b> will detect toxic messages in group chats
   <b>Send</b> /subscribe_mod (for admins) to became moderator of this chat
   <b>Send</b> /unsubscribe_mod to unsubscribe from moderating this chat
+  <b>Send</b> /interactive if you want the bot to respond to toxic messages
   <b>Send</b> /setthresh <i>toxic</i> | <i>profan</i> | <i>identity</i> | <i>insult</i> 0.5 in order to change threshold for specified category to 0.5
   <b>Send</b> /resetthresh in order to reset thresholds to default values
   <b>Send</b> /getthresh in order to get default values
@@ -30,3 +31,4 @@ chat_missing: Please start a private chat with me before subscribing
 not_admin: You are not an admin
 subscribed: You are already subscribed
 unsubscribed: You are already unsubscribed
+interactive: Interactiveness was set to

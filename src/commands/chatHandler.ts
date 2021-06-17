@@ -199,7 +199,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
       if (private_chat) {
         chat.interactive = !chat.interactive
         chat = await (chat as any).save()
-        ctx.reply(`Interactive was set to ${chat.interactive}`)
+        ctx.reply(`${ctx.i18n.t('interactive')} ${chat.interactive}`)
       } else {
         ctx.reply(ctx.i18n.t('chat_missing'))
       }
