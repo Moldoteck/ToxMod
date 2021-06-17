@@ -1,7 +1,7 @@
-# Telegram bot for detecting toxic messages in group chats
+# Telegram bot for moderating toxic messages in group chats
  <a href="https://t.me/ToxModBot">@ToxModBot</a><br>
-This bot will reply with `Possible toxic message` to a message containing toxic/profanic words.
-`doNotStore` flag is set to true in order to preserve better privacy for message content (it will not be stored on servers)
+Tired of moderating endless messages in group chats? Try ToxMod. It can warn users if their message can be toxic to someone and it can help moderating group messages, by sending to moderators a message with link to possible toxic messages.
+doNotStore` flag is set to true in order to preserve better privacy for message content (it will not be stored on servers)
 
 # API's:
 Google Perspective API
@@ -21,7 +21,7 @@ And you should be good to go! Feel free to fork and submit pull requests. Thanks
 - `TOKEN` — Telegram bot token
 - `MONGO`— URL of the mongo database
 - `PERSPECTIVEKEY` — Token for Google Perspective API. More info here: https://perspectiveapi.com
-- `HUGGINGFACEKEY` — Token for huggingface
+- `HUGGINGFACEKEY` — Token for huggingface(DEPRECATED)
 
 Also, please, consider looking at `.env.sample`.
 
