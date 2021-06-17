@@ -1,7 +1,8 @@
 # Telegram bot for moderating toxic messages in group chats
  <a href="https://t.me/ToxModBot">@ToxModBot</a><br>
-Tired of moderating endless messages in group chats? Try ToxMod. It can warn users if their message can be toxic to someone and it can help moderating group messages, by sending to moderators a message with link to possible toxic messages.
-doNotStore` flag is set to true in order to preserve better privacy for message content (it will not be stored on servers)
+_Tired of moderating endless messages in group chats? Try ToxMod._
+This bot can warn users if their message can be toxic to someone and it can help moderating group messages, by sending to moderators a message with link to possible toxic messages.
+`doNotStore` flag is set to true in order to preserve better privacy for message content (it will not be stored on servers)
 
 # API's:
 Google Perspective API
