@@ -4,7 +4,7 @@ export class User {
   @prop({ required: true, index: true, unique: true })
   id: number
 
-  @prop({ required: true, default: 'ru' })
+  @prop({ required: true, default: 'en' })
   language: string
 }
 
