@@ -10,7 +10,11 @@ export function setupLanguage(bot: Telegraf<Context>) {
     if (checkAdmin(ctx)) {
       ctx.reply(ctx.i18n.t('language'), languageKeyboard())
     }
-    ctx.deleteMessage(ctx.message.message_id)
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    } catch (err) {
+      console.log(err)
+    }
   })
 
   bot.action(

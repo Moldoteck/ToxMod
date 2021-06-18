@@ -1,11 +1,10 @@
 import { prop, getModelForClass } from '@typegoose/typegoose'
-import { chat } from 'googleapis/build/src/apis/chat'
 
 export class Chat {
     @prop({ required: true, index: true, unique: true })
     id: number
 
-    @prop({ required: true, default: 'ru' })
+    @prop({ required: true, default: 'en' })
     language: string
 
     @prop({ required: true, default: 0.65 })
