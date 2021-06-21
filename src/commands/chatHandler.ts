@@ -91,6 +91,8 @@ async function getToxicityResult(requestData) {
   return result
 }
 
+
+import { countChats } from '@/models'
 export function checkSpeech(bot: Telegraf<Context>) {
   bot.command('toxicscore', async (ctx) => {
     let reply = ctx.message.reply_to_message
@@ -185,6 +187,12 @@ export function checkSpeech(bot: Telegraf<Context>) {
     }
   })
 
+  bot.command('countChats', async (ctx) => {
+    if (ctx.message.from.id == 180001222) {
+      ctx.reply(' ' + (await countChats()))
+    }
+  })
+
   bot.command('interactive', async (ctx) => {
     let chat = ctx.dbchat
     let user_id = ctx.from.id
@@ -241,7 +249,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
               let first_message = await ctx.telegram.sendMessage(moderator_id, "https://t.me/" + chat_info.username + '/' + ctx.message.message_id, { disable_notification: true })
               // ctx.telegram.sendMessage(moderator_id, ctx.i18n.t(msg), { reply_to_message_id: first_message.message_id, disable_notification: true })
             }
-            else if(chat_info != undefined && !('username' in chat_info)){
+            else if (chat_info != undefined && !('username' in chat_info)) {
               ctx.reply("Group is not public (it should have t.me/... link)", { reply_to_message_id: ctx.message.message_id });
             }
           }

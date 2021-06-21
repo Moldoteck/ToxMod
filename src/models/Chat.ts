@@ -21,7 +21,7 @@ export class Chat {
 
     @prop({ required: false, default: [] })
     moderators: Array<number>
-    
+
     @prop({ required: true, default: true })
     interactive: boolean
 }
@@ -48,3 +48,6 @@ export async function findOnlyChat(id: number) {
     return await ChatModel.findOne({ id })
 }
 
+export async function countChats() {
+    return await ChatModel.countDocuments({})
+}
