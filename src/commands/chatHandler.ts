@@ -217,7 +217,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
   })
 
   bot.on('text', async ctx => {
-    if (ctx.message.text !== undefined && ctx.dbchat.interactive) {
+    if (ctx.message.text !== undefined) {
       let data = dataObject(ctx.i18n.t('short_name'), ctx.message.text)
       let result = await getToxicityResult(data)
 
@@ -238,8 +238,10 @@ export function checkSpeech(bot: Telegraf<Context>) {
           }
         }
 
-        let msg = response_notification[keys[max_index]]
-        ctx.reply(ctx.i18n.t(msg), { reply_to_message_id: ctx.message.message_id });
+        if (ctx.dbchat.interactive) {
+          let msg = response_notification[keys[max_index]]
+          ctx.reply(ctx.i18n.t(msg), { reply_to_message_id: ctx.message.message_id })
+        }
 
         let chat = ctx.dbchat
         chat.moderators.forEach(async moderator_id => {
