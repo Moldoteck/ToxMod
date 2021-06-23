@@ -297,7 +297,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
 
           if (ctx.dbchat.interactive) {
             let msg = response_notification[keys[max_index]]
-            customReply(ctx.i18n.t(msg), ctx)
+            await customReply(ctx.i18n.t(msg), ctx)
             // try {
             //   ctx.reply(ctx.i18n.t(msg), { reply_to_message_id: ctx.message.message_id })
             // } catch (err) {
@@ -317,11 +317,11 @@ export function checkSpeech(bot: Telegraf<Context>) {
               let chat_info = await ctx.getChat()
               if (chat_info != undefined && 'username' in chat_info) {
                 let tt = "https://t.me/" + chat_info.username + '/' + ctx.message.message_id
-                modReply(moderator_id, tt, ctx)
+                await modReply(moderator_id, tt, ctx)
                 // ctx.telegram.sendMessage(moderator_id, ctx.i18n.t(msg), { reply_to_message_id: first_message.message_id, disable_notification: true })
               }
               else if (chat_info != undefined && !('username' in chat_info)) {
-                customReply("Group is not public (it should have t.me/... link)", ctx)
+                await customReply("Group is not public (it should have t.me/... link)", ctx)
               }
             }
             catch (err) {
