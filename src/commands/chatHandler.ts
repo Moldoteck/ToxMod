@@ -119,6 +119,10 @@ async function customReply(message: string, context) {
       msg = msg.substring(st).split(' ')[0]
       await delay(parseInt(msg))
       await customReply(message, context)
+    } else {
+      console.log("Error", err.stack);
+      console.log("Error", err.name);
+      console.log("Error", err.message);
     }
   }
 }
@@ -133,9 +137,13 @@ async function modReply(mod, message: string, context) {
       msg = msg.substring(st).split(' ')[0]
       await delay(parseInt(msg))
       await customReply(message, context)
+    } else {
+      console.log("Error", err.stack);
+      console.log("Error", err.name);
+      console.log("Error", err.message);
     }
   }
-}              
+}
 
 export function checkSpeech(bot: Telegraf<Context>) {
   bot.command('toxicscore', async (ctx) => {
@@ -309,7 +317,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
               let chat_info = await ctx.getChat()
               if (chat_info != undefined && 'username' in chat_info) {
                 let tt = "https://t.me/" + chat_info.username + '/' + ctx.message.message_id
-                modReply(moderator_id, tt,ctx)
+                modReply(moderator_id, tt, ctx)
                 // ctx.telegram.sendMessage(moderator_id, ctx.i18n.t(msg), { reply_to_message_id: first_message.message_id, disable_notification: true })
               }
               else if (chat_info != undefined && !('username' in chat_info)) {
