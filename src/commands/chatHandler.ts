@@ -127,7 +127,7 @@ async function customReply(message: string, context) {
   }
 }
 
-async function modReply(mod, message: string, context) {
+async function modReply(mod: number, message: string, context) {
   try {
     await context.telegram.sendMessage(mod, message, { disable_notification: true })
   } catch (err) {
@@ -136,7 +136,7 @@ async function modReply(mod, message: string, context) {
       let st = msg.indexOf('retry after') + 'retry after '.length
       msg = msg.substring(st).split(' ')[0]
       await delay(parseInt(msg))
-      await customReply(message, context)
+      await modReply(mod, message, context)
     } else {
       console.log("Error", err.stack);
       console.log("Error", err.name);
@@ -297,7 +297,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
 
           if (ctx.dbchat.interactive) {
             let msg = response_notification[keys[max_index]]
-            await customReply(ctx.i18n.t(msg), ctx)
+            customReply(ctx.i18n.t(msg), ctx)
             // try {
             //   ctx.reply(ctx.i18n.t(msg), { reply_to_message_id: ctx.message.message_id })
             // } catch (err) {
@@ -317,11 +317,11 @@ export function checkSpeech(bot: Telegraf<Context>) {
               let chat_info = await ctx.getChat()
               if (chat_info != undefined && 'username' in chat_info) {
                 let tt = "https://t.me/" + chat_info.username + '/' + ctx.message.message_id
-                await modReply(moderator_id, tt, ctx)
+                modReply(moderator_id, tt, ctx)
                 // ctx.telegram.sendMessage(moderator_id, ctx.i18n.t(msg), { reply_to_message_id: first_message.message_id, disable_notification: true })
               }
               else if (chat_info != undefined && !('username' in chat_info)) {
-                await customReply("Group is not public (it should have t.me/... link)", ctx)
+                customReply("Group is not public (it should have t.me/... link)", ctx)
               }
             }
             catch (err) {
