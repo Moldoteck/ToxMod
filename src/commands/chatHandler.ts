@@ -31,6 +31,10 @@ async function getHFToxicityResult(text) {
   return res.body[0][1].score
 }
 
+function delay(scnd: number) {
+  return new Promise(resolve => setTimeout(resolve, scnd * 1000));
+}
+
 function dataObject(language: string,
   text: string,
   dontStore: boolean = false) {
@@ -66,24 +70,32 @@ async function getToxicityResult(requestData) {
     console.log("Error", err.message);
     return undefined
   }
-
-  let err, response = await client.comments.analyze({
-    key: process.env.PERSPECTIVEKEY,
-    resource: requestData,
-  })
-  if (err) {
+  let [err, response] = [undefined, undefined]
+  try {
+    response = await client.comments.analyze({
+      key: process.env.PERSPECTIVEKEY,
+      resource: requestData,
+    })
+    // if (err) {
+    //   console.log("Error", err.stack);
+    //   console.log("Error", err.name);
+    //   console.log("Error", err.message);
+    //   return undefined
+    // }
+  } catch (err) {
     console.log("Error", err.stack);
     console.log("Error", err.name);
     console.log("Error", err.message);
     return undefined
   }
-  else {
-    let attr_scores = response.data.attributeScores
-    toxic_score = attr_scores.TOXICITY.summaryScore.value
-    profan_score = attr_scores.PROFANITY.summaryScore.value
-    insult_score = attr_scores.INSULT.summaryScore.value
-    identity_score = attr_scores.IDENTITY_ATTACK.summaryScore.value
-  }
+
+  // else {
+  let attr_scores = response.data.attributeScores
+  toxic_score = attr_scores.TOXICITY.summaryScore.value
+  profan_score = attr_scores.PROFANITY.summaryScore.value
+  insult_score = attr_scores.INSULT.summaryScore.value
+  identity_score = attr_scores.IDENTITY_ATTACK.summaryScore.value
+  // }
   let result = {
     toxic_score: toxic_score,
     profan_score: profan_score,
@@ -97,26 +109,42 @@ async function getToxicityResult(requestData) {
 
 
 import { countChats } from '@/models'
+async function customReply(message: string, context) {
+  try {
+    await context.reply(message, { reply_to_message_id: context.message.message_id })
+  } catch (err) {
+    let msg = '' + err.message
+    if (msg.includes('retry after')) {
+      let st = msg.indexOf('retry after') + 'retry after '.length
+      msg = msg.substring(st).split(' ')[0]
+      await delay(parseInt(msg))
+      await customReply(message, context)
+    }
+  }
+}
+
 export function checkSpeech(bot: Telegraf<Context>) {
   bot.command('toxicscore', async (ctx) => {
     let reply = ctx.message.reply_to_message
     if (reply != undefined && 'text' in reply) {
       let data = dataObject(ctx.i18n.t('short_name'), reply.text)
       let result = await getToxicityResult(data)
-      var keys = Object.keys(result);
-      var max = result[keys[0]];
-      var max_index = 0;
-      var i;
+      if (result) {
+        var keys = Object.keys(result);
+        var max = result[keys[0]];
+        var max_index = 0;
+        var i;
 
-      for (i = 1; i < keys.length; i++) {
-        var value = result[keys[i]];
-        if (value > max) {
-          max = value;
-          max_index = i;
+        for (i = 1; i < keys.length; i++) {
+          var value = result[keys[i]];
+          if (value > max) {
+            max = value;
+            max_index = i;
+          }
         }
+        let msg = response_score_map[keys[max_index]]
+        ctx.reply(`${ctx.i18n.t(msg)} ${Math.trunc(100 * max)}%`, { reply_to_message_id: ctx.message.reply_to_message.message_id });
       }
-      let msg = response_score_map[keys[max_index]]
-      ctx.reply(`${ctx.i18n.t(msg)} ${Math.trunc(100 * max)}%`, { reply_to_message_id: ctx.message.reply_to_message.message_id });
     }
     try {
       ctx.deleteMessage(ctx.message.message_id)
@@ -131,13 +159,15 @@ export function checkSpeech(bot: Telegraf<Context>) {
     if (reply) {
       if ('text' in reply) {
         let result = await getToxicityResult(dataObject(ctx.i18n.t('short_name'), reply.text))
-        let keys = Object.keys(result)
-        keys.forEach(key => {
-          result[key] = `${Math.trunc(100 * result[key])}%`
-        });
+        if (result) {
+          let keys = Object.keys(result)
+          keys.forEach(key => {
+            result[key] = `${Math.trunc(100 * result[key])}%`
+          });
 
-        // let responseString = replaceAll(deleteStrings(JSON.stringify(result), ['"', '{', '}']), ',', '\n')
-        ctx.reply(`${JSON.stringify(result, null, 2)}`, { reply_to_message_id: ctx.message.reply_to_message.message_id });
+          // let responseString = replaceAll(deleteStrings(JSON.stringify(result), ['"', '{', '}']), ',', '\n')
+          ctx.reply(`${JSON.stringify(result, null, 2)}`, { reply_to_message_id: ctx.message.reply_to_message.message_id });
+        }
       }
     }
     try {
@@ -225,45 +255,57 @@ export function checkSpeech(bot: Telegraf<Context>) {
       let data = dataObject(ctx.i18n.t('short_name'), ctx.message.text)
       let result = await getToxicityResult(data)
 
-      if (result.toxic_score > ctx.dbchat.toxic_thresh
-        || result.profan_score > ctx.dbchat.profan_thresh
-        || result.insult_score > ctx.dbchat.insult_thresh
-        || result.identity_score > ctx.dbchat.identity_thresh) {
-        var keys = Object.keys(result);
-        var max = result[keys[0]];
-        var max_index = 0;
-        var i;
+      if (result) {
+        if (result.toxic_score > ctx.dbchat.toxic_thresh
+          || result.profan_score > ctx.dbchat.profan_thresh
+          || result.insult_score > ctx.dbchat.insult_thresh
+          || result.identity_score > ctx.dbchat.identity_thresh) {
+          var keys = Object.keys(result);
+          var max = result[keys[0]];
+          var max_index = 0;
+          var i;
 
-        for (i = 1; i < keys.length; i++) {
-          var value = result[keys[i]];
-          if (value > max) {
-            max = value;
-            max_index = i;
-          }
-        }
-
-        if (ctx.dbchat.interactive) {
-          let msg = response_notification[keys[max_index]]
-          ctx.reply(ctx.i18n.t(msg), { reply_to_message_id: ctx.message.message_id })
-        }
-
-        let chat = ctx.dbchat
-        chat.moderators.forEach(async moderator_id => {
-          try {
-            let chat_info = await ctx.getChat()
-            if (chat_info != undefined && 'username' in chat_info) {
-              let first_message = await ctx.telegram.sendMessage(moderator_id, "https://t.me/" + chat_info.username + '/' + ctx.message.message_id, { disable_notification: true })
-              // ctx.telegram.sendMessage(moderator_id, ctx.i18n.t(msg), { reply_to_message_id: first_message.message_id, disable_notification: true })
-            }
-            else if (chat_info != undefined && !('username' in chat_info)) {
-              ctx.reply("Group is not public (it should have t.me/... link)", { reply_to_message_id: ctx.message.message_id });
+          for (i = 1; i < keys.length; i++) {
+            var value = result[keys[i]];
+            if (value > max) {
+              max = value;
+              max_index = i;
             }
           }
-          catch (err) {
-            console.log(err)
-          }
-        });
 
+          if (ctx.dbchat.interactive) {
+            let msg = response_notification[keys[max_index]]
+            customReply(ctx.i18n.t(msg), ctx)
+            // try {
+            //   ctx.reply(ctx.i18n.t(msg), { reply_to_message_id: ctx.message.message_id })
+            // } catch (err) {
+            //   let msg = ''
+            //   if (msg.includes('retry after')) {
+            //     // err.message
+            //     let st = msg.indexOf('retry after') + 'retry after '.length
+            //     msg = msg.substring(st).split(' ')[0]
+            //     await delay(parseInt(msg))
+            //   }
+            // }
+          }
+
+          let chat = ctx.dbchat
+          chat.moderators.forEach(async moderator_id => {
+            try {
+              let chat_info = await ctx.getChat()
+              if (chat_info != undefined && 'username' in chat_info) {
+                let first_message = await ctx.telegram.sendMessage(moderator_id, "https://t.me/" + chat_info.username + '/' + ctx.message.message_id, { disable_notification: true })
+                // ctx.telegram.sendMessage(moderator_id, ctx.i18n.t(msg), { reply_to_message_id: first_message.message_id, disable_notification: true })
+              }
+              else if (chat_info != undefined && !('username' in chat_info)) {
+                ctx.reply("Group is not public (it should have t.me/... link)", { reply_to_message_id: ctx.message.message_id });
+              }
+            }
+            catch (err) {
+              console.log(err)
+            }
+          });
+        }
         // ctx.reply(ctx.i18n.t('toxic_notification'), { reply_to_message_id: ctx.message.message_id });
       }
       else {
