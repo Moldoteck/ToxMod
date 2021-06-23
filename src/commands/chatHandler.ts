@@ -61,7 +61,9 @@ async function getToxicityResult(requestData) {
     client = await google.discoverAPI(perspective_link)
   }
   catch (err) {
-    console.log(err)
+    console.log("Error", err.stack);
+    console.log("Error", err.name);
+    console.log("Error", err.message);
     return undefined
   }
 
@@ -70,7 +72,9 @@ async function getToxicityResult(requestData) {
     resource: requestData,
   })
   if (err) {
-    console.log(err)
+    console.log("Error", err.stack);
+    console.log("Error", err.name);
+    console.log("Error", err.message);
     return undefined
   }
   else {
