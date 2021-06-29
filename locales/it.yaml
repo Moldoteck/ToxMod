@@ -18,10 +18,10 @@ help: |
   
 language: Per favore, seleziona la lingua.
 language_selected: <b>Bot</b> ora parla Italiano.
-toxic_notification: Posso sbagliarmi, ma se il messaggio è tossico, per favore cancellare
-profan_notification: Posso sbagliarmi, ma se il messaggio contiene parolacce, per favore cancellare
-insult_notification: Posso sbagliarmi, ma se il messaggio contiene insulti, per favore cancellare
-identity_notification: Posso sbagliarmi, ma se il messaggio prende di mira l'identità in modo negativo, per favore cancellare
+toxic_notification: Posso sbagliarmi, ma se il messaggio è tossico, per favore cancella
+profan_notification: Posso sbagliarmi, ma se il messaggio contiene parolacce, per favore cancella
+insult_notification: Posso sbagliarmi, ma se il messaggio contiene insulti, per favore cancella
+identity_notification: Posso sbagliarmi, ma se il messaggio prende di mira l'identità in modo negativo, per favore cancella
 default_thresh: Le soglie sono difettose
 thresh_info: Le soglie sono
 toxic_msg: Questo messaggio è tossico con probabilità di
