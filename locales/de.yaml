@@ -6,7 +6,7 @@ help: |
   <b>Bot</b> erkennt schädliche Nachrichten in Gruppenchats und hilft bei deren Moderation.
   Fügen Sie den Bot einfach zu einer beliebigen Gruppe hinzu! (und stellen Sie sicher, dass es über Administratorrechte verfügt)
   <b>Senden</b> /subscribe_mod (für Admins), um Moderator des aktuellen Chats zu werden. <b>(Du solltest nicht anonym sein
- und Gruppe sollte einen Link wie t.me/... haben)</b>
+  und Gruppe sollte einen Link wie t.me/... haben)</b>
   <b>Senden</b> /unsubscribe_mod um sich von der Moderation des aktuellen Chats abzumelden
   <b>Senden</b> /interactive wenn Sie möchten, dass der Bot auf toxische Nachrichten reagiert
   <b>Senden</b> /setthresh <i>toxic</i> | <i>profan</i> | <i>identity</i> | <i>insult</i> 0.5 um den Schwellenwert für die angegebene Kategorie in 0.5 zu ändern
