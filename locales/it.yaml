@@ -1,0 +1,36 @@
+name: Italiana
+short_name: it
+start: |
+  <b>Bot</b> rileverà i messaggi tossici nelle chat di gruppo e aiuterà a moderarli.
+help: |
+  <b>Bot</b> rileverà i messaggi tossici nelle chat di gruppo e aiuterà a moderarli.
+  Basta aggiungere il bot a qualsiasi gruppo! (e assicurati che abbia i diritti di amministratore)
+  <b>Spedire</b> /subscribe_mod (per gli amministratori) per diventare moderatore della chat corrente. <b>(Non dovresti essere anonimo
+  e il gruppo dovrebbe avere un collegamento come t.me/...)</b>
+  <b>Spedire</b> /unsubscribe_mod per annullare l'iscrizione alla moderazione della chat corrente
+  <b>Spedire</b> /interactive se vuoi che il bot risponda ai messaggi tossici
+  <b>Spedire</b> /setthresh <i>toxic</i> | <i>profan</i> | <i>identity</i> | <i>insult</i> 0.5 per cambiare la soglia per la categoria specificata a 0.5
+  <b>Spedire</b> /resetthresh per riportare le soglie ai valori di default
+  <b>Spedire</b> /getthresh per ottenere i valori predefiniti
+  <b>Spedire</b> /toxicscore come risposta a un messaggio per ottenere un punteggio di tossicità per esso
+  <b>Spedire</b> /language per cambiare lingua
+  <b>Spedire</b> /help - questo messaggio
+  
+language: Per favore, seleziona la lingua.
+language_selected: <b>Bot</b> ora parla Italiano.
+toxic_notification: Posso sbagliarmi, ma se il messaggio è tossico, per favore cancellalo
+profan_notification: Posso sbagliarmi, ma se il messaggio contiene parolacce, per favore cancellale
+insult_notification: Posso sbagliarmi, ma se il messaggio contiene insulti, per favore cancellali
+identity_notification: Posso sbagliarmi, ma se il messaggio prende di mira l'identità in modo negativo, eliminalo
+default_thresh: Le soglie sono difettose
+thresh_info: Le soglie sono
+toxic_msg: Questo messaggio è tossico con probabilità di
+profan_msg: Questo messaggio è profano con probabilità di
+insult_msg: Questo messaggio è offensivo con probabilità di
+identity_msg: Questo messaggio è negativo rispetto all'identità con probabilità di
+
+chat_missing: Per favore avvia una chat privata con me prima di iscriverti
+not_admin: Non sei un amministratore
+subscribed: Sei già iscritto
+unsubscribed: Sei già disiscritto
+interactive: L'interattività era impostata su
