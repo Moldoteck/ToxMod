@@ -53,6 +53,31 @@ function dataObject(language: string,
   }
 }
 
+async function analyzeComment(client, requestData, depth = 0) {
+  let response = undefined
+  if (depth > 120) {
+    console.log('Analysis wait time exceeded')
+    return undefined
+  }
+  try {
+    response = await client.comments.analyze({
+      key: process.env.PERSPECTIVEKEY,
+      resource: requestData,
+    })
+  } catch (err) {
+    if (err.message.includes('Quota exceeded for quota metric')) {
+      await delay(1)
+      response = await analyzeComment(client, requestData, depth + 1)
+    } else {
+      console.log("Error stack: ", err.stack)
+      console.log("Error name: ", err.name)
+      console.log("Error message: ", err.message)
+      response = undefined
+    }
+  }
+  return response
+}
+
 async function getToxicityResult(requestData) {
   let client = undefined
 
@@ -65,29 +90,12 @@ async function getToxicityResult(requestData) {
     client = await google.discoverAPI(perspective_link)
   }
   catch (err) {
-    console.log("Error", err.stack);
-    console.log("Error", err.name);
-    console.log("Error", err.message);
+    console.log("Error stack: ", err.stack)
+    console.log("Error name: ", err.name)
+    console.log("Error message: ", err.message)
     return undefined
   }
-  let [err, response] = [undefined, undefined]
-  try {
-    response = await client.comments.analyze({
-      key: process.env.PERSPECTIVEKEY,
-      resource: requestData,
-    })
-    // if (err) {
-    //   console.log("Error", err.stack);
-    //   console.log("Error", err.name);
-    //   console.log("Error", err.message);
-    //   return undefined
-    // }
-  } catch (err) {
-    console.log("Error", err.stack);
-    console.log("Error", err.name);
-    console.log("Error", err.message);
-    return undefined
-  }
+  let response = await analyzeComment(client, requestData)
 
   // else {
   let attr_scores = response.data.attributeScores
@@ -275,6 +283,9 @@ export function checkSpeech(bot: Telegraf<Context>) {
   bot.on('text', async ctx => {
     if (ctx.message.text !== undefined) {
       let data = dataObject(ctx.i18n.t('short_name'), ctx.message.text)
+      // for(let ind=0;ind<250;++ind){
+      //   let result = await getToxicityResult(data)
+      // }
       let result = await getToxicityResult(data)
 
       if (result) {
