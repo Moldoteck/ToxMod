@@ -1,0 +1,36 @@
+name: Deutch
+short_name: de
+start: |
+  <b>Bot</b> erkennt schädliche Nachrichten in Gruppenchats und hilft bei deren Moderation
+help: |
+  <b>Bot</b> erkennt schädliche Nachrichten in Gruppenchats und hilft bei deren Moderation.
+  Fügen Sie den Bot einfach zu einer beliebigen Gruppe hinzu! (und stellen Sie sicher, dass es über Administratorrechte verfügt)
+  <b>Senden</b> /subscribe_mod (für Admins), um Moderator des aktuellen Chats zu werden. <b>(Du solltest nicht anonym sein
+ und Gruppe sollte einen Link wie t.me/... haben)</b>
+  <b>Senden</b> /unsubscribe_mod um sich von der Moderation des aktuellen Chats abzumelden
+  <b>Senden</b> /interactive wenn Sie möchten, dass der Bot auf toxische Nachrichten reagiert
+  <b>Senden</b> /setthresh <i>toxic</i> | <i>profan</i> | <i>identity</i> | <i>insult</i> 0.5 um den Schwellenwert für die angegebene Kategorie in 0.5 zu ändern
+  <b>Senden</b> /resetthresh um Schwellenwerte auf Standardwerte zurückzusetzen
+  <b>Senden</b> /getthresh um Standardwerte zu erhalten
+  <b>Senden</b> /toxicscore als Antwort auf eine Nachricht, um die Toxizitätsbewertung dafür zu erhalten
+  <b>Senden</b> /language um die Sprache zu ändern
+  <b>Senden</b> /help - this message
+  
+language: Bitte wählen Sie die Sprache aus.
+language_selected: <b>Bot</b> spricht jetzt Deutsch.
+toxic_notification: Ich kann mich irren, aber wenn die Nachricht giftig ist, lösche sie bitte
+profan_notification: Ich kann mich irren, aber wenn die Nachricht Obszönitäten enthält, löschen Sie sie bitte
+insult_notification: Ich kann mich irren, aber wenn die Nachricht Beleidigungen enthält, lösche sie bitte
+identity_notification: Ich kann mich irren, aber wenn die Nachricht negativ auf die Identität abzielt, löschen Sie sie bitte
+default_thresh: Schwellenwerte sind verfälscht
+thresh_info: Schwellenwerte sind
+toxic_msg: Diese Nachricht ist mit einer Wahrscheinlichkeit von giftig
+profan_msg: Diese Nachricht ist mit einer Wahrscheinlichkeit von profan
+insult_msg: Diese Nachricht ist mit einer Wahrscheinlichkeit von beleidigend
+identity_msg: Diese Nachricht ist mit einer Wahrscheinlichkeit von . negativ gegen die Identität
+
+chat_missing: Bitte starte einen privaten Chat mit mir, bevor du dich abonnierst
+not_admin: Du bist kein Administrator
+subscribed: Du bist bereits abonniert
+unsubscribed: Sie sind bereits abgemeldet
+interactive: Interaktivität wurde eingestellt auf

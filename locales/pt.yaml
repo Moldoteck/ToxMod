@@ -1,0 +1,36 @@
+name: Português
+short_name: pt
+start: |
+  <b>O bot</b> detectará mensagens tóxicas em chats em grupo e ajudará a moderá-las.
+help: |
+  <b>O bot</b> detectará mensagens tóxicas em chats em grupo e ajudará a moderá-las.
+  Basta adicionar o bot a qualquer grupo! (e certifique-se de que tem direitos de administrador)
+  <b>Envie</b> /subscribe_mod (para administradores) para se tornar moderador do chat atual. <b>(Você não deve ser anônimo
+  e o grupo deve ter um link como t.me/...)</b>
+  <b>Envie</b> /unsubscribe_mod para cancelar a inscrição na moderação do bate-papo atual
+  <b>Envie</b> /interactive se você quiser que o bot responda a mensagens tóxicas
+  <b>Envie</b> /setthresh <i>toxic</i> | <i>profan</i> | <i>identity</i> | <i>insult</i> 0.5 a fim de alterar o limite da categoria especificada para 0.5
+  <b>Envie</b> /resetthresh a fim de redefinir os limites para os valores padrão
+  <b>Envie</b> /getthresh a fim de obter valores padrão
+  <b>Envie</b> /toxicscore como uma resposta a uma mensagem para obter uma pontuação de toxicidade para ela
+  <b>Envie</b> /language a fim de mudar o idioma
+  <b>Envie</b> /help - esta mensagem
+  
+language: Por favor, selecione o idioma.
+language_selected: <b>Bot</b> agora fala Português.
+toxic_notification: Posso estar enganado, mas se a mensagem for tóxica, exclua-a
+profan_notification: Posso estar enganado, mas se a mensagem contiver palavrões, exclua-os
+insult_notification: Posso estar enganado, mas se a mensagem contiver insultos, exclua-os
+identity_notification: Posso estar enganado, mas se a mensagem direcionar a identidade de forma negativa, exclua-a
+default_thresh: Limiares estão danificados
+thresh_info: Limiares são
+toxic_msg: Esta mensagem é tóxica com probabilidade de
+profan_msg: Esta mensagem é profanada com probabilidade de
+insult_msg: Esta mensagem é um insulto com probabilidade de
+identity_msg: Esta mensagem é negativa em relação à identidade com probabilidade de
+
+chat_missing: Por favor, inicie um chat privado comigo antes de se inscrever
+not_admin: Você não é um administrador
+subscribed: Você Já Está Inscrito
+unsubscribed: Você já cancelou a inscrição
+interactive: Interatividade foi definida para
