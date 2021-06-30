@@ -4,7 +4,7 @@ start: |
   <b>Bot</b> erkennt schädliche Nachrichten in Gruppenchats und hilft bei deren Moderation
 help: |
   <b>Bot</b> erkennt schädliche Nachrichten in Gruppenchats und hilft bei deren Moderation.
-  Fügen Sie den Bot einfach zu einer beliebigen Gruppe hinzu! (und stellen Sie sicher, dass es über Administratorrechte verfügt)
+  Fügen Sie den Bot einfach zu einer beliebigen Gruppe hinzu! (und stellen Sie sicher, dass es über <b>Administratorrechte verfügt</b>)
   <b>Senden</b> /subscribe_mod (für Admins), um Moderator des aktuellen Chats zu werden. <b>(Du solltest nicht anonym sein
   und Gruppe sollte einen Link wie t.me/... haben)</b>
   <b>Senden</b> /unsubscribe_mod um sich von der Moderation des aktuellen Chats abzumelden

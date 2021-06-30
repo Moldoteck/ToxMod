@@ -4,7 +4,7 @@ start: |
   <b>Bot</b> rileverà i messaggi tossici nelle chat di gruppo e aiuterà a moderarli.
 help: |
   <b>Bot</b> rileverà i messaggi tossici nelle chat di gruppo e aiuterà a moderarli.
-  Basta aggiungere il bot a qualsiasi gruppo! (e assicurati che abbia i diritti di amministratore)
+  Basta aggiungere il bot a qualsiasi gruppo! (e assicurati che abbia i <b>diritti di amministratore!!!</b>)
   <b>Spedire</b> /subscribe_mod (per gli amministratori) per diventare moderatore della chat corrente. <b>(Non dovresti essere anonimo
   e il gruppo dovrebbe avere un collegamento come t.me/...)</b>
   <b>Spedire</b> /unsubscribe_mod per annullare l'iscrizione alla moderazione della chat corrente

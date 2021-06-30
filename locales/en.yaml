@@ -4,7 +4,7 @@ start: |
   <b>Bot</b> will detect toxic messages in group chats and help moderate them
 help: |
   <b>Bot</b> will detect toxic messages in group chats and help moderate them.
-  Just add the bot to any group! (and make sure it has admin rights)
+  Just add the bot to any group! (and make sure it has <b>admin rights!!!</b>)
   <b>Send</b> /subscribe_mod (for admins) to became moderator of current chat. <b>(You shouldn't be anonymous
   and group should have link like t.me/...)</b>
   <b>Send</b> /unsubscribe_mod to unsubscribe from moderating current chat

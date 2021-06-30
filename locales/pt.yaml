@@ -4,7 +4,7 @@ start: |
   <b>O bot</b> detectará mensagens tóxicas em chats em grupo e ajudará a moderá-las.
 help: |
   <b>O bot</b> detectará mensagens tóxicas em chats em grupo e ajudará a moderá-las.
-  Basta adicionar o bot a qualquer grupo! (e certifique-se de que tem direitos de administrador)
+  Basta adicionar o bot a qualquer grupo! (e certifique-se de que tem <b>direitos de administrador!!!</b>)
   <b>Envie</b> /subscribe_mod (para administradores) para se tornar moderador do chat atual. <b>(Você não deve ser anônimo
   e o grupo deve ter um link como t.me/...)</b>
   <b>Envie</b> /unsubscribe_mod para cancelar a inscrição na moderação do bate-papo atual
