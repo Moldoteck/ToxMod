@@ -8,5 +8,8 @@ export async function checkAdmin(ctx) {
       isAdmin = true
     }
   }
+  if (ctx.chat.type == 'private') {
+    isAdmin = true
+  }
   return isAdmin
 }
