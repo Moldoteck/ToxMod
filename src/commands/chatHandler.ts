@@ -203,6 +203,12 @@ export function checkSpeech(bot: Telegraf<Context>) {
       let tg_url = `https://api.telegram.org/bot${process.env.TOKEN}/setMyCommands`
       await needle('post', tg_url, JSON.stringify(data), options)
     }
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
   })
 
   bot.command('hide_cmd', async (ctx) => {
@@ -213,6 +219,12 @@ export function checkSpeech(bot: Telegraf<Context>) {
       let data = { scope: { type: 'chat', chat_id: `${ctx.message.chat.id}` } }
       let tg_url = `https://api.telegram.org/bot${process.env.TOKEN}/deleteMyCommands`
       await needle('post', tg_url, JSON.stringify(data), options)
+    }
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
     }
   })
 
