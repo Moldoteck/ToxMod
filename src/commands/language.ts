@@ -6,8 +6,8 @@ import { safeLoad } from 'js-yaml'
 import { checkAdmin } from "./adminChecker"
 
 export function setupLanguage(bot: Telegraf<Context>) {
-  bot.command('language', (ctx) => {
-    if (checkAdmin(ctx)) {
+  bot.command('language', async (ctx) => {
+    if (await checkAdmin(ctx)) {
       ctx.reply(ctx.i18n.t('language'), languageKeyboard())
     }
     try {

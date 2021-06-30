@@ -15,6 +15,8 @@ help: |
   <b>Envie</b> /toxicscore como uma resposta a uma mensagem para obter uma pontuação de toxicidade para ela
   <b>Envie</b> /language a fim de mudar o idioma
   <b>Envie</b> /help - esta mensagem
+  <b>Envie</b> /hide_cmd - to hide inline commands
+  <b>Envie</b> /show_cmd - to show inline commands
   
 language: Por favor, selecione o idioma.
 language_selected: <b>Bot</b> agora fala Português.

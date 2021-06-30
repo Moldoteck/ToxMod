@@ -2,7 +2,7 @@ import { ExecException, ExecOptions } from 'node:child_process';
 import { Context, Telegraf } from 'telegraf'
 const { google } = require('googleapis');
 const needle = require('needle')
-import { findOnlyChat } from '../models'
+import { findAllChats, findOnlyChat } from '../models'
 import { checkAdmin } from "./adminChecker"
 
 let perspective_link = 'https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1';
@@ -19,6 +19,17 @@ let response_notification = {
   insult_score: 'insult_notification',
   identity_score: 'identity_notification'
 }
+let bot_commands = [{ command: 'subscribe_mod', description: 'became moderator of chat' },
+{ command: 'unsubscribe_mod', description: 'unsubscribe from moderating' },
+{ command: 'interactive', description: 'will respond to toxic messages' },
+{ command: 'setthresh', description: 'change threshold for category' },
+{ command: 'resetthresh', description: 'reset thresholds to defaults' },
+{ command: 'getthresh', description: 'get defaults' },
+{ command: 'toxicscore', description: 'get toxicity score for message' },
+{ command: 'language', description: 'change language' },
+{ command: 'help', description: 'help message' },
+{ command: 'hide_cmd', description: 'hide inline commands' },
+{ command: 'show_cmd', description: 'show inline commands' }]
 
 async function getHFToxicityResult(text) {
   let API_URL = "https://api-inference.huggingface.co/models/sismetanin/rubert-toxic-pikabu-2ch"
@@ -154,6 +165,57 @@ async function modReply(mod: number, message: string, context) {
 }
 
 export function checkSpeech(bot: Telegraf<Context>) {
+  bot.command('show_cmd_force', async (ctx) => {
+    if (ctx.message.from.id == 180001222) {
+      let chats = await findAllChats()
+      for (let ind = 0; ind < chats.length; ++ind) {
+        let chat_id = chats[ind].id
+        let options = {
+          headers: { 'Content-Type': 'application/json' }
+        }
+        let data = { commands: bot_commands, scope: { type: 'chat', chat_id: `${chat_id}` } }
+        let tg_url = `https://api.telegram.org/bot${process.env.TOKEN}/setMyCommands`
+        await needle('post', tg_url, JSON.stringify(data), options)
+      }
+    }
+  })
+  bot.command('hide_cmd_force', async (ctx) => {
+    if (ctx.message.from.id == 180001222) {
+      let chats = await findAllChats()
+      for (let ind = 0; ind < chats.length; ++ind) {
+        let chat_id = chats[ind].id
+        let options = {
+          headers: { 'Content-Type': 'application/json' }
+        }
+        let data = { scope: { type: 'chat', chat_id: `${chat_id}` } }
+        let tg_url = `https://api.telegram.org/bot${process.env.TOKEN}/deleteMyCommands`
+        await needle('post', tg_url, JSON.stringify(data), options)
+      }
+    }
+  })
+
+  bot.command('show_cmd', async (ctx) => {
+    if (await checkAdmin(ctx)) {
+      let options = {
+        headers: { 'Content-Type': 'application/json' }
+      }
+      let data = { commands: bot_commands, scope: { type: 'chat', chat_id: `${ctx.message.chat.id}` } }
+      let tg_url = `https://api.telegram.org/bot${process.env.TOKEN}/setMyCommands`
+      await needle('post', tg_url, JSON.stringify(data), options)
+    }
+  })
+
+  bot.command('hide_cmd', async (ctx) => {
+    if (await checkAdmin(ctx)) {
+      let options = {
+        headers: { 'Content-Type': 'application/json' }
+      }
+      let data = { scope: { type: 'chat', chat_id: `${ctx.message.chat.id}` } }
+      let tg_url = `https://api.telegram.org/bot${process.env.TOKEN}/deleteMyCommands`
+      await needle('post', tg_url, JSON.stringify(data), options)
+    }
+  })
+
   bot.command('toxicscore', async (ctx) => {
     let reply = ctx.message.reply_to_message
     if (reply != undefined && 'text' in reply) {
@@ -218,7 +280,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
       console.log(err)
     }
     if (!chat.moderators.includes(user_id)) {
-      if (checkAdmin(ctx)) {
+      if (await checkAdmin(ctx)) {
         let private_chat = await findOnlyChat(user_id)
         if (private_chat) {
           chat.moderators.push(ctx.from.id)
@@ -266,7 +328,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
     catch (err) {
       console.log(err)
     }
-    if (checkAdmin(ctx)) {
+    if (await checkAdmin(ctx)) {
       let private_chat = await findOnlyChat(user_id)
       if (private_chat) {
         chat.interactive = !chat.interactive

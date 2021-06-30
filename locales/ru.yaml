@@ -15,6 +15,9 @@ help: |
   <b>Отправь</b> /toxicscore в качестве ответа на сообщение, чтобы получить для него оценку токсичности
   <b>Отправь</b> /language, чтобы изменить язык
   <b>Отправь</b> /help - это сообщение
+  <b>Отправь</b> /hide_cmd - to hide inline commands
+  <b>Отправь</b> /show_cmd - to show inline commands
+
 language: Пожалуйста, выберите язык.
 language_selected: <b>Бот</b> теперь говорит по-русски.
 toxic_notification: Я могу ошибаться, но если ваше сообщение токсичное, удалите его

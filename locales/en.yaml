@@ -15,6 +15,8 @@ help: |
   <b>Send</b> /toxicscore as a reply to a message in order to get toxicity score for it
   <b>Send</b> /language in order to change language
   <b>Send</b> /help - this message
+  <b>Send</b> /hide_cmd - to hide inline commands
+  <b>Send</b> /show_cmd - to show inline commands
   
 language: Please, select the language.
 language_selected: <b>Bot</b> now speaks English.
