@@ -354,8 +354,96 @@ export function checkSpeech(bot: Telegraf<Context>) {
     }
   })
 
+
+  bot.command('list_trig', async (ctx) => {
+    let chat = ctx.dbchat
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
+    if (await checkAdmin(ctx)) {
+      ctx.reply(Object.keys(chat.triggers).join(' -- '))
+    } else {
+      ctx.reply(ctx.i18n.t('not_admin'))
+    }
+  })
+
+  bot.command('rm_trig', async (ctx) => {
+    let chat = ctx.dbchat
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
+    if (await checkAdmin(ctx)) {
+      let reply = ctx.message.reply_to_message
+      if (reply && 'text' in reply) {
+        if (reply.text.length < 41) {
+          let reply_text = reply.text.toLowerCase()
+          delete chat.triggers[reply_text]
+          chat.markModified('triggers');
+          chat = await (chat as any).save()
+          ctx.reply(`Removed`, { reply_to_message_id: ctx.message.reply_to_message.message_id })
+        }
+      }
+    } else {
+      ctx.reply(ctx.i18n.t('not_admin'))
+    }
+  })
+
+  bot.command('add_trig', async (ctx) => {
+    let chat = ctx.dbchat
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
+    if (await checkAdmin(ctx)) {
+      let reply = ctx.message.reply_to_message
+      if (reply && 'text' in reply) {
+        if (reply.text.length < 41) {
+          if (Object.keys(chat.triggers).length < 50) {
+            chat.triggers[reply.text.toLowerCase()] = 0
+            chat.markModified('triggers');
+            chat = await (chat as any).save()
+            ctx.reply(`Trigger saved`, { reply_to_message_id: ctx.message.reply_to_message.message_id })
+          }
+        }
+      }
+    } else {
+      ctx.reply(ctx.i18n.t('not_admin'))
+    }
+  })
+
   bot.on('text', async ctx => {
     if (ctx.message.text !== undefined) {
+      let triggers = Object.keys(ctx.dbchat.triggers)
+      let small_message = ctx.message.text.toLowerCase()
+      triggers.forEach(element => {
+        if (small_message.includes(element)) {
+          ctx.dbchat.moderators.forEach(async moderator_id => {
+            try {
+              let chat_info = await ctx.getChat()
+              if (chat_info != undefined && 'username' in chat_info) {
+                let tt = "https://t.me/" + chat_info.username + '/' + ctx.message.message_id
+                modReply(moderator_id, tt, ctx)
+                // ctx.telegram.sendMessage(moderator_id, ctx.i18n.t(msg), { reply_to_message_id: first_message.message_id, disable_notification: true })
+              }
+              else if (chat_info != undefined && !('username' in chat_info)) {
+                customReply("Group is not public (it should have t.me/... link)", ctx)
+              }
+            }
+            catch (err) {
+              console.log(err)
+            }
+          });
+        }
+      });
+
       let data = dataObject(ctx.i18n.t('short_name'), ctx.message.text)
       // for(let ind=0;ind<250;++ind){
       //   let result = await getToxicityResult(data)

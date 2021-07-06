@@ -24,6 +24,9 @@ export class Chat {
 
     @prop({ required: true, default: true })
     interactive: boolean
+    
+    @prop({ required: true, default: {} })
+    triggers: {}
 }
 
 // Get Chat model
