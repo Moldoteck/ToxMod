@@ -20,10 +20,6 @@ help: |
   <b>Send</b> /add_trig - (beta) as reply, to add trigger word
   <b>Send</b> /rm_trig - (beta) as reply, to remove trigger word
   <b>Send</b> /get_trig - (beta) to get trigger words
-
-  command: 'add_trig', description: '(beta) add trigger word' },
-{ command: 'rm_trig', description: '(beta) remove trigger word' },
-{ command: 'get_trig', description: '(beta) get trigger words' 
   
 language: Please, select the language.
 language_selected: <b>Bot</b> now speaks English.
