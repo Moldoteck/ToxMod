@@ -391,6 +391,8 @@ export function checkSpeech(bot: Telegraf<Context>) {
           chat = await (chat as any).save()
           ctx.reply(`Removed`, { reply_to_message_id: ctx.message.reply_to_message.message_id })
         }
+      } else {
+        ctx.reply('Command should be a reply')
       }
     } else {
       ctx.reply(ctx.i18n.t('not_admin'))
@@ -416,6 +418,8 @@ export function checkSpeech(bot: Telegraf<Context>) {
             ctx.reply(`Trigger saved`, { reply_to_message_id: ctx.message.reply_to_message.message_id })
           }
         }
+      } else {
+        ctx.reply('Command should be a reply')
       }
     } else {
       ctx.reply(ctx.i18n.t('not_admin'))
