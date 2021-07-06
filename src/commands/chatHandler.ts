@@ -29,7 +29,10 @@ let bot_commands = [{ command: 'subscribe_mod', description: 'became moderator o
 { command: 'language', description: 'change language' },
 { command: 'help', description: 'help message' },
 { command: 'hide_cmd', description: 'hide inline commands' },
-{ command: 'show_cmd', description: 'show inline commands' }]
+{ command: 'show_cmd', description: 'show inline commands' },
+{ command: 'add_trig', description: '(beta) add trigger word' },
+{ command: 'rm_trig', description: '(beta) remove trigger word' },
+{ command: 'get_trig', description: '(beta) get trigger words' }]
 
 async function getHFToxicityResult(text) {
   let API_URL = "https://api-inference.huggingface.co/models/sismetanin/rubert-toxic-pikabu-2ch"
