@@ -346,7 +346,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
       }
       ctx.reply('Total users ' + users_tot)
       ctx.reply('Private Users ' + users_pr)
-      ctx.reply('Users ' + chat_nr)
+      ctx.reply('Chats ' + chat_nr)
     }
   })
 
