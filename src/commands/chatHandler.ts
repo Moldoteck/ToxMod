@@ -442,10 +442,73 @@ export function checkSpeech(bot: Telegraf<Context>) {
     }
   })
 
+
+  bot.command('add_ignore', async (ctx) => {
+    let chat = ctx.dbchat
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
+    if (await checkAdmin(ctx)) {
+      let reply = ctx.message.reply_to_message
+      if (reply && 'text' in reply) {
+        if (reply.text.length < 41) {
+          if (Object.keys(chat.ignored_triggers).length < 50) {
+            chat.ignored_triggers[reply.text.toLowerCase()] = 0
+            chat.markModified('ignored_triggers');
+            chat = await (chat as any).save()
+            ctx.reply(`Ignored trigger saved`, { reply_to_message_id: ctx.message.reply_to_message.message_id })
+          }
+        }
+      } else {
+        ctx.reply('Command should be a reply')
+      }
+    } else {
+      ctx.reply(ctx.i18n.t('not_admin'))
+    }
+  })
+
+
+  bot.command('rm_ignore', async (ctx) => {
+    let chat = ctx.dbchat
+    try {
+      ctx.deleteMessage(ctx.message.message_id)
+    }
+    catch (err) {
+      console.log(err)
+    }
+    if (await checkAdmin(ctx)) {
+      let reply = ctx.message.reply_to_message
+      if (reply && 'text' in reply) {
+        if (reply.text.length < 41) {
+          let reply_text = reply.text.toLowerCase()
+          delete chat.ignored_triggers[reply_text]
+          chat.markModified('ignored_triggers');
+          chat = await (chat as any).save()
+          ctx.reply(`Removed`, { reply_to_message_id: ctx.message.reply_to_message.message_id })
+        }
+      } else {
+        ctx.reply('Command should be a reply')
+      }
+    } else {
+      ctx.reply(ctx.i18n.t('not_admin'))
+    }
+  })
+
   bot.on('text', async ctx => {
     if (ctx.message.text !== undefined) {
       let triggers = Object.keys(ctx.dbchat.triggers)
+      let ignored_triggers = Object.keys(ctx.dbchat.ignored_triggers)
       let small_message = ctx.message.text.toLowerCase()
+      for (let ignored of ignored_triggers) {
+        let rg = new RegExp(`${ignored}`, 'ig')
+        small_message = small_message.replace(rg, '')
+      }
+      if (small_message.length == 0) {
+        return
+      }
       triggers.forEach(element => {
         if (small_message.includes(element)) {
           ctx.dbchat.moderators.forEach(async moderator_id => {
@@ -467,7 +530,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
         }
       });
 
-      let data = dataObject(ctx.i18n.t('short_name'), ctx.message.text)
+      let data = dataObject(ctx.i18n.t('short_name'), small_message)
       // for(let ind=0;ind<250;++ind){
       //   let result = await getToxicityResult(data)
       // }

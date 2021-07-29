@@ -27,6 +27,9 @@ export class Chat {
     
     @prop({ required: true, default: {} })
     triggers: {}
+
+    @prop({ required: true, default: {} })
+    ignored_triggers: {}
 }
 
 // Get Chat model
