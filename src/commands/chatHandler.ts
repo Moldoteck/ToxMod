@@ -3,7 +3,7 @@ import { Context, Telegraf } from 'telegraf'
 const { google } = require('googleapis');
 const needle = require('needle')
 import { findAllChats, findOnlyChat } from '../models'
-import { checkAdmin } from "./adminChecker"
+import { checkAdmin, checkAdminID } from "./adminChecker"
 
 let perspective_link = 'https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1';
 
@@ -571,6 +571,18 @@ export function checkSpeech(bot: Telegraf<Context>) {
           }
 
           let chat = ctx.dbchat
+          //delete users that are not admins anymore
+          let todelete = []
+          for(let mod_id of chat.moderators){
+            if (!(await checkAdmin(ctx, mod_id))) { 
+              todelete.push(mod_id)
+            }
+          }
+          for(let mod_id of todelete){
+            chat.moderators.splice(chat.moderators.indexOf(mod_id), 1)
+            chat = await (chat as any).save()
+          }
+          
           chat.moderators.forEach(async moderator_id => {
             try {
               let chat_info = await ctx.getChat()
