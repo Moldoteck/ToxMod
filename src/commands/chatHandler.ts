@@ -574,7 +574,7 @@ export function checkSpeech(bot: Telegraf<Context>) {
           //delete users that are not admins anymore
           let todelete = []
           for(let mod_id of chat.moderators){
-            if (!(await checkAdmin(ctx, mod_id))) { 
+            if (!(await checkAdminID(ctx, mod_id))) { 
               todelete.push(mod_id)
             }
           }
